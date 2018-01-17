@@ -8,12 +8,11 @@ const app = express();
 const port = process.env.PORT || '3001';
 
 app.use(express.static(path.join(__dirname, 'dist')));
+app.set('port', port);
 
 app.get('*', (req, res) => { 
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
-
-app.set('port', port);
 
 const server = http.createServer(app);
 server.listen(port, () => console.log('Porchwire'));
