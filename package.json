@@ -6,11 +6,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build --prod",
+    "build": "ng build --aot --prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "postinstall": "ng build --aot -prod"
+    "e2e": "ng e2e"
   },
   "engines": {
     "node": "~9.4.0",
@@ -18,8 +17,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/cli": "1.6.4",
-    "@angular/compiler-cli": "^5.1.0",
     "@angular-devkit/schematics": "0.0.46",
     "@angular/animations": "^5.1.0",
     "@angular/common": "^5.1.0",
