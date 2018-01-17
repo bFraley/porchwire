@@ -13,13 +13,12 @@
     "postinstall": "ng build --aot -prod"
   },
   "engines": {
-    "node": "~6.10.3",
-    "npm": "~4.2.0"
+    "node": "~9.4.0",
+    "npm": "~5.6.0"
   },
   "private": true,
   "dependencies": {
-    "@angular/cli": "1.6.4",
-    "@angular/compiler-cli": "^5.1.0",
+    "@angular-devkit/schematics": "0.0.46",
     "@angular/animations": "^5.1.0",
     "@angular/common": "^5.1.0",
     "@angular/compiler": "^5.1.0",
@@ -29,12 +28,16 @@
     "@angular/platform-browser": "^5.1.0",
     "@angular/platform-browser-dynamic": "^5.1.0",
     "@angular/router": "^5.1.0",
-    "bootstrap": "^4.0.0-beta",
+    "bootstrap": "^4.0.0-beta.2",
     "core-js": "^2.4.1",
     "express": "^4.16.2",
+    "jquery": "^3.2.1",
     "passport": "^0.4.0",
     "peer": "^0.2.8",
+    "popper.js": "^1.12.9",
+    "postcss-merge-rules": "~2.1.2",
     "rxjs": "^5.5.6",
+    "schematics": "^0.2.0",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
