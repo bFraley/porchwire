@@ -6,13 +6,11 @@ const path = require('path');
 const app = express();
 
 const port = process.env.PORT || '3001';
-const dist = path.join(__dirname, 'dist');
-const indexfile = path.join(__dirname, 'dist/index.html');
 
-app.use(express.static(dist));
+app.use(express.static(path.join(__dirname, 'dist')));
 
-app.get('*', (req, res) => {
-    res.sendFile(indexfile);
+app.get('*', (req, res) => { 
+    res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
 app.set('port', port);
