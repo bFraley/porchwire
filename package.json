@@ -18,6 +18,8 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/cli": "1.6.4",
+    "@angular/compiler-cli": "^5.1.0",
     "@angular-devkit/schematics": "0.0.46",
     "@angular/animations": "^5.1.0",
     "@angular/common": "^5.1.0",
