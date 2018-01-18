@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 
 
 import { AppComponent } from './app.component';
+import { PeerComponent } from './peer/peer.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    PeerComponent
   ],
   imports: [
     BrowserModule

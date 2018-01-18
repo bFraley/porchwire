@@ -17,12 +17,11 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-devkit/schematics": "0.0.46",
+    "@angular-devkit/schematics": "0.0.48",
     "@angular/animations": "^5.1.0",
     "@angular/cli": "1.6.4",
     "@angular/common": "^5.1.0",
     "@angular/compiler": "^5.1.0",
-    "@angular/compiler-cli": "^5.1.0",
     "@angular/core": "^5.1.0",
     "@angular/forms": "^5.1.0",
     "@angular/http": "^5.1.0",
