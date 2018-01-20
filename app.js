@@ -4,7 +4,7 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const app = express();
-const port = process.env.PORT || '4200';
+const port = process.env.PORT || 8080;
 var ExpressPeerServer = require('peer').ExpressPeerServer;
 
 app.use(express.static(path.join(__dirname, 'dist')));

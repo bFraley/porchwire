@@ -122,7 +122,7 @@ var AppModule = /** @class */ (function () {
 /***/ "../../../../../src/app/peer/peer.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<p>Hey there!</p>\n\n<p><strong>You're currently {{ peer.peerId }}</strong></p>\n<label>Change your handle.\n    <input [(ngModel)]=\"peer.peerId\" id=\"user\"\n    placeholder=\"{{ peer.peerId }}\" value=\"{{ peer.peerId }}\">\n</label>\n<hr>\n\n<label>Connect To:\n    <input id=\"connect-to\" value=\"\">\n</label>\n\n<button type=\"button\" id=\"connect\" class=\"btn btn-success\">Connect</button>\n\n"
+module.exports = "<p>Hey there!</p>\n\n<p><strong>You're currently {{ peer.peerId }}</strong></p>\n<label>Change your handle.\n    <input [(ngModel)]=\"peer.peerId\" id=\"user\"\n    placeholder=\"{{ peer.peerId }}\" value=\"{{ peer.peerId }}\">\n</label>\n<hr>\n\n<div id=\"connection-list\">\n    \n</div>\n\n<label>Connect To:\n    <input id=\"connect-to\" value=\"\">\n</label>\n\n<button type=\"button\" id=\"connect-chat\" class=\"btn btn-success\">Chat</button>\n<button type=\"button\" id=\"connect-jam\" class=\"btn btn-success\">Jam</button>\n\n<hr>\n\n<div id=\"audio-wrapper\">\n    <p>Audio</p>\n    <audio id=\"audio\" src=\"\" controls></audio>\n</div>\n\n<div class=\"col-6\">\n    <div class=\"well\">\n        <textarea id=\"chat-input\"></textarea>\n        <button type=\"button\" id=\"send-button\" class=\"btn\">Send</button>\n    </div>\n</div>\n\n<div class=\"col-6\">\n    <div class=\"well\">\n        <div id=\"conversation\"></div>\n    </div>\n</div>\n"
 
 /***/ }),
 

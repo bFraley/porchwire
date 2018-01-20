@@ -7,9 +7,33 @@
 </label>
 <hr>
 
+<div id="connection-list">
+    
+</div>
+
 <label>Connect To:
     <input id="connect-to" value="">
 </label>
 
-<button type="button" id="connect" class="btn btn-success">Connect</button>
+<button type="button" id="connect-chat" class="btn btn-success">Chat</button>
+<button type="button" id="connect-jam" class="btn btn-success">Jam</button>
 
+<hr>
+
+<div id="audio-wrapper">
+    <p>Audio</p>
+    <audio id="audio" src="" controls></audio>
+</div>
+
+<div class="col-6">
+    <div class="well">
+        <textarea id="chat-input"></textarea>
+        <button type="button" id="send-button" class="btn">Send</button>
+    </div>
+</div>
+
+<div class="col-6">
+    <div class="well">
+        <div id="conversation"></div>
+    </div>
+</div>
