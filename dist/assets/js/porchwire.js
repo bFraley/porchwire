@@ -11,8 +11,14 @@ function create_par(parent, msg) {
 
 var connected;
 var connections;
+var HOST = 'localhost';
 
 window.onload = function() {
+
+    // deployment host
+    if (window.location.href.indexOf('porchwire')) {
+        HOST = 'porchwire.herokuapp.com';
+    }
 
     let sent_messages = [];
     let rec_messages = [];
@@ -108,7 +114,7 @@ window.onload = function() {
         getUserId(),
         {
             key: 'porchwiredev2018',
-            host: 'localhost',
+            host: HOST,
             port: '',
             path: '/peerjs',
             debug: 3            
