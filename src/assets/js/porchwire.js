@@ -109,7 +109,7 @@ window.onload = function() {
         {
             key: 'porchwiredev2018',
             host: 'localhost',
-            port: 80,
+            port: '',
             path: '/peerjs',
             debug: 3            
         }
