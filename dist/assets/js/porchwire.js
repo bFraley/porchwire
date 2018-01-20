@@ -52,7 +52,7 @@ window.onload = function() {
         console.log(ID);
         console.log('Peer: ' + peer);
 
-        var conn = peer.connect(ID);
+        var conn = peer.connect(ID, { reliable: true });
 
         console.log(conn);
 
@@ -138,9 +138,16 @@ window.onload = function() {
 
     });
 
+    peer.on('disconnected', function() {
+        console.log('lost connection, attempting to reconnect');
+        if (peer.reconnect()) {
+            console.log('Reconnected: ID: ' + peer.id);
+        }
+    });
+
     // UI listeners    
 
-    connect.addEventListener('click', function() {
+    connect.addEventListener('touchstart click', function() {
         connected = newChatConnection();
     }, false);
 
