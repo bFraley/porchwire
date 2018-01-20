@@ -10,7 +10,14 @@ var ExpressPeerServer = require('peer').ExpressPeerServer;
 app.use(express.static(path.join(__dirname, 'dist')));
 app.set('port', port);
 
-app.get('/', (req, res, next) => { 
+app.all('*', function(req, res, next) {
+    if (req.headers['x-forwarded-proto'] != 'https')
+        res.redirect('https://' + req.headers.host + req.url);
+    else
+        next()
+});
+
+app.get('/', (req, res) => { 
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
