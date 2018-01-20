@@ -70,7 +70,7 @@ window.onload = function() {
         // CALL
         var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-        navigator.getUserMedia({audio: true}, function(stream) {
+        navigator.getUserMedia({video:false, audio: true}, function(stream) {
 
             var ID = byId('connect-to').value;
 
@@ -115,8 +115,8 @@ window.onload = function() {
         }
     );
 
-    connections = peer.listAllPeers();
-    connection_list.innerHTML = "<p>" + connections + "</p>";
+    //connections = peer.listAllPeers();
+    //connection_list.innerHTML = "<p>" + connections + "</p>";
 
     peer.on('open', function(id) {
         console.log('My peer ID is: ' + id);
