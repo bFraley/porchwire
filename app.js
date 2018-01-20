@@ -6,6 +6,8 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || '3001';
 
+var connection_count = 0;
+
 var peerserver = require('peer').ExpressPeerServer;
 
 app.use(express.static(path.join(__dirname, 'dist')));
@@ -20,4 +22,4 @@ server.listen(port, () => console.log('Porchwire'));
 
 app.use('/porch', peerserver(server));
 
-server.on('connection', () => console.log('peer at /connect'));
+server.on('connection', () => console.log('request connected'));

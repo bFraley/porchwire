@@ -1,3 +1,7 @@
-<p>
-  peer works!
-</p>
+<p>Hey there!</p>
+
+<p><strong>You're currently {{ peer.peerId }}</strong></p>
+<label>Change your handle.
+    <input [(ngModel)]="peer.peerId" placeholder="{{ peer.peerId }}">
+</label>
+
