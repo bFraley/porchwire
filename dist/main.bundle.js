@@ -122,7 +122,7 @@ var AppModule = /** @class */ (function () {
 /***/ "../../../../../src/app/peer/peer.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<p>Hey there!</p>\n\n<p><strong>You're currently {{ peer.peerId }}</strong></p>\n<label>Change your handle.\n    <input [(ngModel)]=\"peer.peerId\" placeholder=\"{{ peer.peerId }}\">\n</label>\n\n"
+module.exports = "<p>Hey there!</p>\n\n<p><strong>You're currently {{ peer.peerId }}</strong></p>\n<label>Change your handle.\n    <input [(ngModel)]=\"peer.peerId\" id=\"user\"\n    placeholder=\"{{ peer.peerId }}\" value=\"{{ peer.peerId }}\">\n</label>\n<hr>\n\n<label>Connect To:\n    <input id=\"connect-to\" value=\"\">\n</label>\n\n<button type=\"button\" id=\"connect\" class=\"btn btn-success\">Connect</button>\n\n"
 
 /***/ }),
 

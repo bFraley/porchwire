@@ -2,6 +2,14 @@
 
 <p><strong>You're currently {{ peer.peerId }}</strong></p>
 <label>Change your handle.
-    <input [(ngModel)]="peer.peerId" placeholder="{{ peer.peerId }}">
+    <input [(ngModel)]="peer.peerId" id="user"
+    placeholder="{{ peer.peerId }}" value="{{ peer.peerId }}">
 </label>
+<hr>
+
+<label>Connect To:
+    <input id="connect-to" value="">
+</label>
+
+<button type="button" id="connect" class="btn btn-success">Connect</button>
 

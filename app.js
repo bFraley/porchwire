@@ -4,22 +4,29 @@ const express = require('express');
 const http = require('http');
 const path = require('path');
 const app = express();
-const port = process.env.PORT || '3001';
-
-var connection_count = 0;
-
-var peerserver = require('peer').ExpressPeerServer;
+const port = process.env.PORT || '4200';
+var ExpressPeerServer = require('peer').ExpressPeerServer;
 
 app.use(express.static(path.join(__dirname, 'dist')));
 app.set('port', port);
 
-app.get('/', (req, res) => { 
+app.get('/', (req, res, next) => { 
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
 const server = http.createServer(app);
-server.listen(port, () => console.log('Porchwire'));
 
-app.use('/porch', peerserver(server));
+var options = {
+    debug: true,
+    allow_discovery: true,
+    path: '/peerjs',
+    key: 'porchwiredev2018'
+}
 
-server.on('connection', () => console.log('request connected'));
+var Peer = ExpressPeerServer(server, options);
+
+app.use('/peerjs', Peer);
+
+server.listen(port);
+
+Peer.on('connection', () => console.log('request connected'));
