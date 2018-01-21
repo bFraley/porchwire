@@ -1,5 +1,6 @@
 /* Porchwire Project Copright 2018 */
 
+// DOM Helpers
 function byId(name) { return document.getElementById(name); }
 function getUserId() { return byId('user').value; }
 
@@ -7,6 +8,16 @@ function create_par(parent, msg) {
     var p = document.createElement('p');
     parent.appendChild(p);
     p.innerText = msg;
+}
+
+// Toggle Jam button, for answering a call with media stream
+function toggleShow(element) {
+    if (element.style.display === 'none') {
+        element.stye.display = 'block';
+    }
+    else {
+        element.style.display = 'none';
+    }
 }
 
 let connected;
@@ -32,24 +43,27 @@ window.onload = function() {
     let send_button = byId('send-button');
     let conversation = byId('conversation');
     let connect = byId('connect-chat');
-    let jam = byId('connect-jam');
     let audio = byId('audio');
 
+    // Add new sent chat message to list, and append to UI
     function addSent(msg) {
         sent_messages.push(msg);
         create_par(conversation, msg);
     }
 
+    // Add new received chat message to list, and append to UI
     function addRec(msg) {
         rec_messages.push(msg);
         create_par(conversation, msg);
     }
 
+    // Converts stream to objectURL to play in audio element
     function streamAudio(stream) {
         audio.src = (URL || webkitURL || mozURL).createObjectURL(stream);
     }
 
-    function newChatConnection() {
+    // User clicked Connect to initiate a call
+    function newConnection() {
 
         var ID = byId('connect-to').value;
         console.log(ID);
@@ -59,6 +73,7 @@ window.onload = function() {
 
         console.log(conn);
 
+        // Data channel connection
         conn.on('open', function() {
 
             // Receive messages
@@ -68,8 +83,12 @@ window.onload = function() {
             });
 
             // Send messages
-            conn.send('Hello!');
+            let init_msg = 'Hello! Connection established with ' + ID;
+            conn.send(init_msg);
+
         });
+
+        newJam();
 
         return conn;
 
@@ -82,7 +101,6 @@ window.onload = function() {
         navigator.getUserMedia({video:false, audio: true}, function(stream) {
 
             var ID = byId('connect-to').value;
-
             var call = peer.call(ID, stream);
 
             call.on('stream', function(remoteStream) {
@@ -94,14 +112,14 @@ window.onload = function() {
         });
 
         //ANSWER
-
-        var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
         peer.on('call', function(call) {
 
+            // Get user media stream and answer the call with stream
             navigator.getUserMedia({video: false, audio: true}, function(stream) {
-                call.answer(stream); // Answer the call with an A/V stream.
+                call.answer(stream); // Answer the call
 
                 call.on('stream', function(remoteStream) {
+                    // converts stream to objectURL to play in audio element
                     streamAudio(remoteStream);
                 });
 
@@ -109,7 +127,6 @@ window.onload = function() {
                     console.log('Failed to get local stream' ,err);
             });
         });
-
     }
 
     /* Page Load - Assign Peer ID */
@@ -136,7 +153,6 @@ window.onload = function() {
     peer.on('connection', function(conn) {
 
         conn.on('data', function(data){
-            // Will print 'hi!'
             console.log(data);
             addRec(data);
         });
@@ -158,17 +174,12 @@ window.onload = function() {
 
     // UI listeners    
 
-    connect.addEventListener('touchstart click', function() {
-        connected = newChatConnection();
+    connect.addEventListener('click', function() {
+        connected = newConnection();
     }, false);
 
     send_button.addEventListener('click', function() {
         connected.send(chat_input.value);
     }, false);
-
-    jam.addEventListener('click', function() {
-        newJam();
-    }, false);
-
    
 }
