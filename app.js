@@ -5,13 +5,12 @@ const http = require('http');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 4200;
-var ExpressPeerServer = require('peer').ExpressPeerServer;
+var PeerServer = require('peer').ExpressPeerServer;
 
 app.use(express.static(path.join(__dirname, 'dist')));
 app.set('port', port);
 
 // Redirect http => https on production
-
 app.all('*', function(req, res, next) {
     if (req.headers['x-forwarded-proto'] != 'https') {
         res.redirect('https://' + req.headers.host + req.url);
@@ -21,6 +20,7 @@ app.all('*', function(req, res, next) {
     }
 });
 
+// Home route - page routing handled by Angular
 app.get('/', (req, res, next) => { 
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
@@ -34,7 +34,7 @@ var options = {
     key: 'porchwiredev2018'
 }
 
-var Peer = ExpressPeerServer(server, options);
+var Peer = PeerServer(server, options);
 
 app.use('/peerjs', Peer);
 

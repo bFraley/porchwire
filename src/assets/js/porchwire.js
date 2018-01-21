@@ -9,8 +9,8 @@ function create_par(parent, msg) {
     p.innerText = msg;
 }
 
-var connected;
-var connections;
+let connected;
+let connections;
 let reconnect_try_count = 0;
 let HOST = 'localhost';
 let PORT = 4200;
@@ -123,6 +123,8 @@ window.onload = function() {
             debug: 3            
         }
     );
+
+    window.peerUser = peer;
 
     //connections = peer.listAllPeers();
     //connection_list.innerHTML = "<p>" + connections + "</p>";

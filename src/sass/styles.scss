@@ -1,5 +1,44 @@
 /* main stylesheet for porchwire project */
 
+@import "node_modules/bootstrap/scss/bootstrap";
+
 @import './variables';
 @import './mixins';
+
+/* BS4 Overrides */
+$body-bg: $gray-800;
+$body-color: $red;
  
+/* Base responsive typography */
+html {
+  font-size: 1rem;
+}
+
+@include media-breakpoint-up(sm) {
+  html {
+    font-size: 1rem;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  html {
+    font-size: 1.1rem;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  html {
+    font-size: 1.2rem;
+  }
+}
+
+#porchwire {
+    margin-bottom: 40px;
+}
+#chat-input {
+    margin-bottom: 15px;
+}
+
+#user-edit {
+    display: none;
+}
