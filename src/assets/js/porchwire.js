@@ -10,6 +10,13 @@ function create_par(parent, msg) {
     p.innerText = msg;
 }
 
+// PING for socket keepalive
+function porchping() {
+    window.peerUser.socket.send({type: 'ping'});
+    console.log('ping');
+    timeoutID = setTimeout(porchping, 40000);
+}
+
 // Toggle Jam button, for answering a call with media stream
 function toggleShow(element) {
     if (element.style.display === 'none') {
@@ -181,5 +188,8 @@ window.onload = function() {
     send_button.addEventListener('click', function() {
         connected.send(chat_input.value);
     }, false);
+
+    // Init socket ping
+    porchping();
    
 }
