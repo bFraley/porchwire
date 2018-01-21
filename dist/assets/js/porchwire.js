@@ -11,13 +11,16 @@ function create_par(parent, msg) {
 
 var connected;
 var connections;
-var HOST = 'localhost';
+let reconnect_try_count = 0;
+let HOST = 'localhost';
+let PORT = 4200;
 
 window.onload = function() {
 
-    // deployment host
-    if (window.location.href.indexOf('porchwire')) {
+    // Set deployment host and port
+    if (window.location.href.indexOf('porchwire') > 0) {
         HOST = 'porchwire.herokuapp.com';
+        PORT = '';
     }
 
     let sent_messages = [];
@@ -115,7 +118,7 @@ window.onload = function() {
         {
             key: 'porchwiredev2018',
             host: HOST,
-            port: '',
+            port: PORT,
             path: '/peerjs',
             debug: 3            
         }
@@ -138,10 +141,16 @@ window.onload = function() {
 
     });
 
-    peer.on('disconnected', function() {
-        console.log('lost connection, attempting to reconnect');
-        if (peer.reconnect()) {
-            console.log('Reconnected: ID: ' + peer.id);
+    peer.on('disconnected', function(id) {
+        if (reconnect_try_count < 5) {
+            console.log('lost connection, attempting to reconnect');
+
+            if (peer.reconnect()) {
+                console.log('Reconnected: ID: ' + id);
+            }
+            else {
+                reconnect_try_count++;
+            }
         }
     });
 
