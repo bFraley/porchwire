@@ -69,7 +69,8 @@ window.onload = function() {
         audio.src = (URL || webkitURL || mozURL).createObjectURL(stream);
     }
 
-    // User clicked Connect to initiate a call
+    // User clicked Connect to initiate a call. Creates a peer to peer
+    // data connection, and the call newJam to initiate media audio streams.
     function newConnection() {
 
         var ID = byId('connect-to').value;
@@ -101,9 +102,15 @@ window.onload = function() {
 
     }
 
+    // Setup and define media stream on peer.all and peer.answer,
+    // called above in newConnecton.
     function newJam() {
-        // CALL
-        var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+        // TODO: navigator.getUserMedia is deprecated and navigator.mediaDevices.getUserMeda
+        // should be used instead. Need adapter.js and possible other browser compatibility fixes
+        // to be added. Reference: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+
+        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
         navigator.getUserMedia({video:false, audio: true}, function(stream) {
 
@@ -130,11 +137,11 @@ window.onload = function() {
                     streamAudio(remoteStream);
                 });
 
-                }, function(err) {
-                    console.log('Failed to get local stream' ,err);
+            }, function(err) {
+                console.log('Failed to get local stream' ,err);
             });
         });
-    }
+    }   
 
     /* Page Load - Assign Peer ID */
     var peer = new Peer(

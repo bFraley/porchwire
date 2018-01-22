@@ -21,11 +21,16 @@ app.all('*', function(req, res, next) {
     }
 });
 
-
 // Home route - page routing handled by Angular
 app.get('/', (req, res, next) => { 
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
+
+app.get('/online', (req, res, next) => { 
+    res.sendFile(path.join(__dirname, 'dist/index.html'));
+});
+
+
 
 const server = http.createServer(app);
 

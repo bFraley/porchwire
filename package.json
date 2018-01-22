@@ -29,6 +29,7 @@
     "@angular/platform-browser": "^5.1.0",
     "@angular/platform-browser-dynamic": "^5.1.0",
     "@angular/router": "^5.1.0",
+    "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0-beta",
     "core-js": "^2.4.1",
     "express": "^4.16.2",
@@ -39,6 +40,7 @@
     "postcss-merge-rules": "~2.1.2",
     "rxjs": "^5.5.6",
     "schematics": "^0.2.0",
+    "webrtc-adapter": "^6.1.0",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
