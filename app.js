@@ -3,15 +3,21 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
+const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 4200;
-var PeerServer = require('peer').ExpressPeerServer;
+
+const PeerServer = require('peer').ExpressPeerServer;
 
 app.use(express.static(path.join(__dirname, 'dist')));
+app.use(bodyParser.json());
+
 app.set('port', port);
 
-// Redirect http => https on production
+let USERS_ONLINE = [];
 
+// Redirect http => https on production
+/**
 app.all('*', function(req, res, next) {
     if (req.headers['x-forwarded-proto'] != 'https') {
         res.redirect('https://' + req.headers.host + req.url);
@@ -20,16 +26,26 @@ app.all('*', function(req, res, next) {
         next();
     }
 });
+**/
 
 // Home route - page routing handled by Angular
 app.get('/', (req, res, next) => { 
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-app.get('/online', (req, res, next) => { 
-    res.sendFile(path.join(__dirname, 'dist/index.html'));
+// Add a new user to USERS_ONLINE array
+app.post('/online', (req, res) => {
+   USERS_ONLINE.push(req.body);
+   console.log(req.body.name + ' is online');
 });
 
+// Gets list of online users
+app.get('/online', (req, res) => {
+    res.setHeader('Content-Type', 'application/json');
+
+    res.send(JSON.stringify(USERS_ONLINE));
+    console.log(JSON.stringify(USERS_ONLINE));
+});
 
 
 const server = http.createServer(app);
@@ -47,4 +63,11 @@ app.use('/peerjs', Peer);
 
 server.listen(port);
 
-Peer.on('connection', () => console.log('request connected'));
+Peer.on('connection', (id) => console.log(USERS_ONLINE.push({name:id})));
+
+Peer.on('disconnect', function(id) {
+
+    USERS_ONLINE = USERS_ONLINE.filter(function(USERS_ONLINE) {
+        return USERS_ONLINE.name !== id;
+    });
+})

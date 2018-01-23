@@ -12,9 +12,19 @@ function create_par(parent, msg) {
 
 // PING for socket keepalive
 function porchping() {
-    window.peerUser.socket.send({type: 'ping'});
-    console.log('ping');
-    timeoutID = setTimeout(porchping, 40000);
+    if (window.peerUser && window.peerUser.socket) {
+        window.peerUser.socket.send({type: 'ping'});
+        console.log('ping');
+    }
+    setTimeout(porchping, 40000);
+}
+
+// 1 minute recurring update user list
+function update_user_list() {
+    get_all_online();
+    console.log('updated user list');
+
+    setTimeout(update_user_list, 40000);
 }
 
 // Toggle Jam button, for answering a call with media stream
@@ -27,8 +37,37 @@ function toggleShow(element) {
     }
 }
 
+// FETCH Helpers
+
+// Get users online
+function get_all_online() {
+
+    let route = 'online';
+    let whos_online = byId('whos-online');
+
+    fetch(route, { method: 'get'})
+        .then(function(response) { return response.json(); })
+        .then(function(users) {
+
+            if (users === undefined || users.length < 1) {
+                whos_online.innerHTML = '<li>' + '0 Users Online' + '</li>';
+            }
+            else {
+                whos_online.innerHTML = '';
+
+                for (let i = 0; i < users.length; i++ ) {
+
+                    let list_item = document.createElement('li');
+                    list_item.className = 'list-group-item';
+                    list_item.innerHTML = users[i].name;
+                    whos_online.appendChild(list_item);
+                }
+            }
+            
+        });
+}
+
 let connected;
-let connections;
 let reconnect_try_count = 0;
 let HOST = 'localhost';
 let PORT = 4200;
@@ -43,8 +82,6 @@ window.onload = function() {
 
     let sent_messages = [];
     let rec_messages = [];
-
-    let connection_list = byId('connection-list');
 
     let chat_input = byId('chat-input');
     let send_button = byId('send-button');
@@ -158,10 +195,10 @@ window.onload = function() {
     window.peerUser = peer;
 
     //connections = peer.listAllPeers();
-    //connection_list.innerHTML = "<p>" + connections + "</p>";
+    //whos_online.innerHTML = "<p>" + connections + "</p>";
 
     peer.on('open', function(id) {
-        console.log('My peer ID is: ' + id);
+        console.log('Your peer ID is: ' + id);
     });
 
     peer.on('connection', function(conn) {
@@ -174,7 +211,7 @@ window.onload = function() {
     });
 
     peer.on('disconnected', function(id) {
-        if (reconnect_try_count < 5) {
+        while (reconnect_try_count < 5) {
             console.log('lost connection, attempting to reconnect');
 
             if (peer.reconnect()) {
@@ -196,7 +233,11 @@ window.onload = function() {
         connected.send(chat_input.value);
     }, false);
 
-    // Init socket ping
-    porchping();
+    // Init online users
+    update_user_list()
    
 }
+
+// Init socket ping
+porchping();
+

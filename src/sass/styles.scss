@@ -43,3 +43,16 @@ html {
     display: none;
 }
 
+#whos-online, #conversation {
+    height: 200px;
+    overflow-y: scroll;
+    padding: 0;
+}
+
+#conversation p {
+  margin: 0;
+  padding: 1px;
+  border-top: solid 1px #ddd;
+  border-bottom: solid 1px #ddd;
+}
+
