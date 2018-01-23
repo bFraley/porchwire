@@ -62,6 +62,7 @@ window.onload = function() {
     function addRec(msg) {
         rec_messages.push(msg);
         create_par(conversation, msg);
+        conversation.scrollTop = conversation.scrollHeight;
     }
 
     // Converts stream to objectURL to play in audio element
@@ -90,7 +91,7 @@ window.onload = function() {
             });
 
             // Send messages
-            let init_msg = 'Hello! Connection established with ' + ID;
+            let init_msg = 'Connection established with ' + ID;
             conn.send(init_msg);
 
         });
