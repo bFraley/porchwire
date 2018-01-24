@@ -217,6 +217,8 @@ window.onload = function() {
             }
         });
 
+        return peer;
+
     } // end initPeer
 
     // UI listeners    
@@ -231,7 +233,7 @@ window.onload = function() {
     }, false);
 
     // Init peer
-    initPeer()
+    let peer = initPeer()
 
     // Init online users
     updateUserList()
