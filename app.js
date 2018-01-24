@@ -32,12 +32,6 @@ app.get('/', (req, res, next) => {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
-// Add a new user to USERS_ONLINE array
-app.post('/online', (req, res) => {
-   USERS_ONLINE.push(req.body);
-   console.log(req.body.name + ' is online');
-});
-
 // Gets list of online users
 app.get('/online', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
@@ -46,7 +40,7 @@ app.get('/online', (req, res) => {
     console.log(JSON.stringify(USERS_ONLINE));
 });
 
-
+// HTTP server
 const server = http.createServer(app);
 
 var options = {
@@ -56,6 +50,7 @@ var options = {
     key: 'porchwiredev2018'
 }
 
+// Peerjs server
 var Peer = PeerServer(server, options);
 
 app.use('/peerjs', Peer);
