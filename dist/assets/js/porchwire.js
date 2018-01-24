@@ -20,11 +20,9 @@ function porchping() {
 }
 
 // 1 minute recurring update user list
-function update_user_list() {
-    get_all_online();
-    console.log('updated user list');
-
-    setTimeout(update_user_list, 40000);
+function updateUserList() {
+    getAllOnline();
+    setTimeout(updateUserList, 40000);
 }
 
 // Toggle Jam button, for answering a call with media stream
@@ -40,7 +38,7 @@ function toggleShow(element) {
 // FETCH Helpers
 
 // Get users online
-function get_all_online() {
+function getAllOnline() {
 
     let route = 'online';
     let whos_online = byId('whos-online');
@@ -117,14 +115,11 @@ window.onload = function() {
 
         var conn = peer.connect(ID, { reliable: true });
 
-        console.log(conn);
-
         // Data channel connection
         conn.on('open', function() {
 
             // Receive messages
             conn.on('data', function(data) {
-                console.log('Received', data);
                 addRec(data);
             });
 
@@ -179,50 +174,50 @@ window.onload = function() {
                 console.log('Failed to get local stream' ,err);
             });
         });
-    }   
+    }
 
-    /* Page Load - Assign Peer ID */
-    var peer = new Peer(
-        getUserId(),
-        {
-            key: 'porchwiredev2018',
-            host: HOST,
-            port: PORT,
-            path: '/peerjs',
-            debug: 3            
-        }
-    );
+    function initPeer() {  
 
-    window.peerUser = peer;
+        /* Page Load - Assign Peer ID */
+        let peer = new Peer(
+            getUserId(),
+            {
+                key: 'porchwiredev2018',
+                host: HOST,
+                port: PORT,
+                path: '/peerjs',
+                debug: 3            
+            }
+        );
 
-    //connections = peer.listAllPeers();
-    //whos_online.innerHTML = "<p>" + connections + "</p>";
+        window.peerUser = peer;
 
-    peer.on('open', function(id) {
-        console.log('Your peer ID is: ' + id);
-    });
-
-    peer.on('connection', function(conn) {
-
-        conn.on('data', function(data){
-            console.log(data);
-            addRec(data);
+        peer.on('open', function(id) {
+            console.log('Your peer ID is: ' + id);
         });
 
-    });
+        peer.on('connection', function(conn) {
 
-    peer.on('disconnected', function(id) {
-        while (reconnect_try_count < 5) {
-            console.log('lost connection, attempting to reconnect');
+            conn.on('data', function(data){
+                addRec(data);
+            });
 
-            if (peer.reconnect()) {
-                console.log('Reconnected: ID: ' + id);
+        });
+
+        peer.on('disconnected', function(id) {
+            while (reconnect_try_count < 5) {
+                console.log('lost connection, attempting to reconnect');
+
+                if (peer.reconnect()) {
+                    console.log('Reconnected: ID: ' + id);
+                }
+                else {
+                    reconnect_try_count++;
+                }
             }
-            else {
-                reconnect_try_count++;
-            }
-        }
-    });
+        });
+
+    } // end initPeer
 
     // UI listeners    
 
@@ -232,13 +227,16 @@ window.onload = function() {
 
     send_button.addEventListener('click', function() {
         connected.send(chat_input.value);
+        chat_input.value = '';
     }, false);
 
+    // Init peer
+    initPeer()
+
     // Init online users
-    update_user_list()
+    updateUserList()
+
+    // Init socket ping
+    porchPing();
    
 }
-
-// Init socket ping
-porchping();
-
