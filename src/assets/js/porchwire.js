@@ -11,7 +11,7 @@ function create_par(parent, msg) {
 }
 
 // PING for socket keepalive
-function porchping() {
+function porchPing() {
     if (window.peerUser && window.peerUser.socket) {
         window.peerUser.socket.send({type: 'ping'});
         console.log('ping');
