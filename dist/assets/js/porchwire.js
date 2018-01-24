@@ -11,12 +11,12 @@ function create_par(parent, msg) {
 }
 
 // PING for socket keepalive
-function porchping() {
+function porchPing() {
     if (window.peerUser && window.peerUser.socket) {
         window.peerUser.socket.send({type: 'ping'});
         console.log('ping');
     }
-    setTimeout(porchping, 40000);
+    setTimeout(porchPing, 40000);
 }
 
 // 1 minute recurring update user list

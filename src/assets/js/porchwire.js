@@ -16,7 +16,7 @@ function porchPing() {
         window.peerUser.socket.send({type: 'ping'});
         console.log('ping');
     }
-    setTimeout(porchping, 40000);
+    setTimeout(porchPing, 40000);
 }
 
 // 1 minute recurring update user list
