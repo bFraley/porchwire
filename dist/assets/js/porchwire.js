@@ -129,7 +129,7 @@ window.onload = function() {
             });
 
             // Send messages
-            let init_msg = 'Connection established with ' + ID;
+            let init_msg = 'Connection established with ' + peer.id;
             conn.send(init_msg);
 
         });
