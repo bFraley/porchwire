@@ -17,7 +17,7 @@ app.set('port', port);
 let USERS_ONLINE = [];
 
 // Redirect http => https on production
-
+/**
 app.all('*', function(req, res, next) {
     if (req.headers['x-forwarded-proto'] != 'https') {
         res.redirect('https://' + req.headers.host + req.url);
@@ -26,6 +26,7 @@ app.all('*', function(req, res, next) {
         next();
     }
 });
+**/
 
 // Home route - page routing handled by Angular
 app.get('/', (req, res, next) => { 
@@ -35,9 +36,7 @@ app.get('/', (req, res, next) => {
 // Gets list of online users
 app.get('/online', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
-
     res.send(JSON.stringify(USERS_ONLINE));
-    console.log(JSON.stringify(USERS_ONLINE));
 });
 
 // HTTP server
@@ -57,7 +56,7 @@ app.use('/peerjs', Peer);
 
 server.listen(port);
 
-Peer.on('connection', (id) => console.log(USERS_ONLINE.push({name:id})));
+Peer.on('connection', (id) => USERS_ONLINE.push({name:id}));
 
 Peer.on('disconnect', function(id) {
 

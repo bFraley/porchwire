@@ -9,7 +9,7 @@ import { Peer } from '../peer';
 
 export class PeerComponent implements OnInit {
   peer: Peer = {
-    peerId: String(Math.floor(Math.random()*10000))
+    peerId: 'Guest' + String(Math.floor(Math.random()*10000))
   };
 
   constructor() { }

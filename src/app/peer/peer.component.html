@@ -1,11 +1,12 @@
 <div class="row">
-    <p><strong>You're currently {{ peer.peerId }}</strong></p>
 
-    <div id="user-edit">
-        <label>Change your handle.
+    <p id="connected-as-peerId"><strong>Connected as {{ peer.peerId }}</strong></p>
+
+    <div id="edit-peerId">
+            <button id="init-peer-link" type="button" class="btn btn-link">Connect me as:</button>
+
             <input [(ngModel)]="peer.peerId" class="form-control" id="user"
             placeholder="{{ peer.peerId }}" value="{{ peer.peerId }}">
-        </label>
     </div>
     <hr>
 </div> <!-- ./row -->
@@ -16,7 +17,7 @@
             <input class="form-control" id="connect-to" value="">
         </label>
 
-        <button type="button" id="connect-chat" class="btn btn-success">Jam</button>
+        <button type="button" id="connect-jam" class="btn btn-success">Jam</button>
         <hr>
     </div>
 

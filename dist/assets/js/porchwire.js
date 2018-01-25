@@ -27,8 +27,9 @@ function updateUserList() {
 
 // Toggle Jam button, for answering a call with media stream
 function toggleShow(element) {
+
     if (element.style.display === 'none') {
-        element.stye.display = 'block';
+        element.style.display = 'block';
     }
     else {
         element.style.display = 'none';
@@ -48,7 +49,7 @@ function getAllOnline() {
         .then(function(users) {
 
             if (users === undefined || users.length < 1) {
-                whos_online.innerHTML = '<li>' + '0 Users Online' + '</li>';
+                whos_online.innerHTML = '<li class="list-group-item">' + '0 Users Online' + '</li>';
             }
             else {
                 whos_online.innerHTML = '';
@@ -84,8 +85,12 @@ window.onload = function() {
     let chat_input = byId('chat-input');
     let send_button = byId('send-button');
     let conversation = byId('conversation');
-    let connect = byId('connect-chat');
+    let connect_jam = byId('connect-jam');
     let audio = byId('audio');
+
+    let edit_peerId = byId('edit-peerId');
+    let connected_as_peerId = byId('connected-as-peerId');
+    let init_peer_link = byId('init-peer-link');
 
     // Add new sent chat message to list, and append to UI
     function addSent(msg) {
@@ -193,6 +198,8 @@ window.onload = function() {
         window.peerUser = peer;
 
         peer.on('open', function(id) {
+            toggleShow(connected_as_peerId);
+            toggleShow(edit_peerId);
             console.log('Your peer ID is: ' + id);
         });
 
@@ -221,9 +228,11 @@ window.onload = function() {
 
     } // end initPeer
 
+    let peer;
+
     // UI listeners    
 
-    connect.addEventListener('click', function() {
+    connect_jam.addEventListener('click', function() {
         connected = newConnection();
     }, false);
 
@@ -232,8 +241,11 @@ window.onload = function() {
         chat_input.value = '';
     }, false);
 
-    // Init peer
-    let peer = initPeer()
+    // User clicks 'connect me as link ', calls initPeer
+    init_peer_link.addEventListener('click', function() {
+        // Init peer
+        peer = initPeer();
+    }, false);
 
     // Init online users
     updateUserList()

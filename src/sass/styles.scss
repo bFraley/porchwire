@@ -39,10 +39,6 @@ html {
     margin-bottom: 15px;
 }
 
-#user-edit {
-    display: none;
-}
-
 #whos-online, #conversation {
     height: 200px;
     overflow-y: scroll;
@@ -50,9 +46,13 @@ html {
 }
 
 #conversation p {
-  margin: 0;
-  padding: 1px;
-  border-top: solid 1px #ddd;
-  border-bottom: solid 1px #ddd;
+    margin: 0;
+    padding: 1px;
+    border-top: solid 1px #ddd;
+    border-bottom: solid 1px #ddd;
+}
+
+#connected-as-peerId {
+    display: none;
 }
 
