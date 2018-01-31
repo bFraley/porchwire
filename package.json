@@ -9,7 +9,8 @@
     "build": "ng build --aot -prod",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "ng build --aot --prod"
   },
   "engines": {
     "node": "~9.4.0",
@@ -18,7 +19,7 @@
   "private": true,
   "dependencies": {
     "@angular-devkit/core": "0.0.29",
-    "@angular-devkit/schematics": "0.0.48",
+    "@angular-devkit/schematics": "0.0.52",
     "@angular/animations": "^5.1.0",
     "@angular/cli": "1.6.4",
     "@angular/common": "^5.1.0",

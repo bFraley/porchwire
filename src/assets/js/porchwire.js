@@ -11,35 +11,16 @@ function create_par(parent, msg) {
 }
 
 // PING for socket keepalive
-function porchPing() {
+async function porchPing() {
     if (window.peerUser && window.peerUser.socket) {
         window.peerUser.socket.send({type: 'ping'});
         console.log('ping');
     }
-    setTimeout(porchPing, 40000);
+    setTimeout(porchPing, 45000);
 }
 
-// 1 minute recurring update user list
-function updateUserList() {
-    getAllOnline();
-    setTimeout(updateUserList, 40000);
-}
-
-// Toggle Jam button, for answering a call with media stream
-function toggleShow(element) {
-
-    if (element.style.display === 'none') {
-        element.style.display = 'block';
-    }
-    else {
-        element.style.display = 'none';
-    }
-}
-
-// FETCH Helpers
-
-// Get users online
-function getAllOnline() {
+// 15sec async recursive to get all online users and update UI
+async function getAllOnline() {
 
     let route = 'online';
     let whos_online = byId('whos-online');
@@ -64,6 +45,8 @@ function getAllOnline() {
             }
             
         });
+
+    setTimeout(getAllOnline, 15000);
 }
 
 let connected;
@@ -79,9 +62,6 @@ window.onload = function() {
         PORT = '';
     }
 
-    let sent_messages = [];
-    let rec_messages = [];
-
     let chat_input = byId('chat-input');
     let send_button = byId('send-button');
     let conversation = byId('conversation');
@@ -91,16 +71,26 @@ window.onload = function() {
     let edit_peerId = byId('edit-peerId');
     let connected_as_peerId = byId('connected-as-peerId');
     let init_peer_link = byId('init-peer-link');
+    let change_peerId_link = byId('change-peerId-link');
+    let connect_to_wrapper = byId('connect-to-wrapper');
 
-    // Add new sent chat message to list, and append to UI
-    function addSent(msg) {
-        sent_messages.push(msg);
-        create_par(conversation, msg);
+    // Toggle show of 'connect as' and 'connected' elements
+    // showConnected 1 to show 'connected', 0 for 'connect as'
+    function toggleConnectionUI(showConnected) {
+        if (showConnected) {
+            connected_as_peerId.style.display = 'block';
+            connect_to_wrapper.style.display = 'block';
+            edit_peerId.style.display = 'none';
+        }
+        else {
+            connected_as_peerId.style.display = 'none';
+            connect_to_wrapper.style.display = 'none';
+            edit_peerId.style.display = 'block';
+        }
     }
 
-    // Add new received chat message to list, and append to UI
-    function addRec(msg) {
-        rec_messages.push(msg);
+    // Append new chat message to UI
+    function addChatMsg(msg) {
         create_par(conversation, msg);
         conversation.scrollTop = conversation.scrollHeight;
     }
@@ -115,8 +105,6 @@ window.onload = function() {
     function newConnection() {
 
         var ID = byId('connect-to').value;
-        console.log(ID);
-        console.log('Peer: ' + peer);
 
         var conn = peer.connect(ID, { reliable: true });
 
@@ -125,7 +113,7 @@ window.onload = function() {
 
             // Receive messages
             conn.on('data', function(data) {
-                addRec(data);
+                addChatMsg(data);
             });
 
             // Send messages
@@ -198,15 +186,16 @@ window.onload = function() {
         window.peerUser = peer;
 
         peer.on('open', function(id) {
-            toggleShow(connected_as_peerId);
-            toggleShow(edit_peerId);
             console.log('Your peer ID is: ' + id);
+
+            // Init async socket ping
+            porchPing();
         });
 
         peer.on('connection', function(conn) {
 
             conn.on('data', function(data){
-                addRec(data);
+                addChatMsg(data);
             });
 
         });
@@ -237,20 +226,28 @@ window.onload = function() {
     }, false);
 
     send_button.addEventListener('click', function() {
-        connected.send(chat_input.value);
+
+        let sent_message = chat_input.value;
+        connected.send(sent_message);
+        addChatMsg('You: ' + sent_message);
+
         chat_input.value = '';
     }, false);
 
     // User clicks 'connect me as link ', calls initPeer
     init_peer_link.addEventListener('click', function() {
-        // Init peer
         peer = initPeer();
+        toggleConnectionUI(1);
     }, false);
 
-    // Init online users
-    updateUserList()
+    // User clicks to change their peer ID,
+    // destroy peer and initPeer
+    change_peerId_link.addEventListener('click', function() {
+        peer.destroy();
+        toggleConnectionUI(0);
+    }, false);
 
-    // Init socket ping
-    porchPing();
-   
+    // Init start get all online users
+    getAllOnline();
+
 }

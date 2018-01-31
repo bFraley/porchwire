@@ -1,25 +1,26 @@
 <div class="row">
-
-    <p id="connected-as-peerId"><strong>Connected as {{ peer.peerId }}</strong></p>
-
-    <div id="edit-peerId">
-            <button id="init-peer-link" type="button" class="btn btn-link">Connect me as:</button>
-
-            <input [(ngModel)]="peer.peerId" class="form-control" id="user"
-            placeholder="{{ peer.peerId }}" value="{{ peer.peerId }}">
-    </div>
-    <hr>
-</div> <!-- ./row -->
-
-<div class="row">
     <div class="col">
-        <label>Connect To:
-            <input class="form-control" id="connect-to" value="">
-        </label>
+        <div id="connected-as-peerId">
+            <p class="d-inline"><strong>Connected as {{ peer.peerId }}</strong></p>
+            <button id="change-peerId-link" type="button" class="btn btn-sm btn-link">Change</button>
+        </div>
 
-        <button type="button" id="connect-jam" class="btn btn-success">Jam</button>
-        <hr>
-    </div>
+        <div id="edit-peerId">
+                <button id="init-peer-link" type="button" class="d-inline btn btn-link">Connect as:</button>
+
+                <input [(ngModel)]="peer.peerId" class="form-control" id="user"
+                placeholder="{{ peer.peerId }}" value="{{ peer.peerId }}">
+        </div>
+
+        <div id="connect-to-wrapper">
+            <label>Start jam with:
+                <input class="form-control" id="connect-to" value="">
+            </label>
+
+            <button type="button" id="connect-jam" class="btn btn-success">Jam</button>
+            <hr>
+        </div>
+    </div> <!-- ./col -->
 
     <div class="col">
         <div class="card">
@@ -31,9 +32,7 @@
 
 <div class="row" id="audio-wrapper">
     <p>Audio</p>
-    <audio controls="true">
-        <source id="audio" src="" type="audio/ogg; codecs=opus">
-    </audio>
+    <audio controls id="audio" src="" type="audio/ogg; codecs=opus"></audio>
 </div>
 
 <div class="row">

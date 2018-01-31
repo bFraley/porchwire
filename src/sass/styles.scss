@@ -52,7 +52,12 @@ html {
     border-bottom: solid 1px #ddd;
 }
 
-#connected-as-peerId {
+/* Initial display rules for 'connect me as' and 'connected as' */
+#connected-as-peerId, #connect-to-wrapper {
     display: none;
+}
+
+#edit-peerId {
+    display: block;
 }
 
