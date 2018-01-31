@@ -24,6 +24,7 @@
     "@angular/cli": "1.6.4",
     "@angular/common": "^5.1.0",
     "@angular/compiler": "^5.1.0",
+    "@angular/compiler-cli": "^5.1.0",
     "@angular/core": "^5.1.0",
     "@angular/forms": "^5.1.0",
     "@angular/http": "^5.1.0",
@@ -41,10 +42,12 @@
     "postcss-merge-rules": "~2.1.2",
     "rxjs": "^5.5.6",
     "schematics": "^0.2.0",
+    "typescript": "~2.5.3",
     "webrtc-adapter": "^6.1.0",
     "zone.js": "^0.8.19"
   },
   "devDependencies": {
+    "@angular/cli": "1.6.4",
     "@angular/compiler-cli": "^5.1.0",
     "@angular/language-service": "^5.1.0",
     "@types/jasmine": "~2.8.3",
