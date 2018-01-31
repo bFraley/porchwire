@@ -26,25 +26,25 @@ async function getAllOnline() {
     let whos_online = byId('whos-online');
 
     fetch(route, { method: 'get'})
-        .then(function(response) { return response.json(); })
-        .then(function(users) {
+    .then(function(response) { return response.json(); })
+    .then(function(users) {
 
-            if (users === undefined || users.length < 1) {
-                whos_online.innerHTML = '<li class="list-group-item">' + '0 Users Online' + '</li>';
+        if (users === undefined || users.length < 1) {
+            whos_online.innerHTML = '<li class="list-group-item">' + '0 Users Online' + '</li>';
+        }
+        else {
+            whos_online.innerHTML = '';
+
+            for (let i = 0; i < users.length; i++ ) {
+
+                let list_item = document.createElement('li');
+                list_item.className = 'list-group-item';
+                list_item.innerHTML = users[i].name;
+                whos_online.appendChild(list_item);
             }
-            else {
-                whos_online.innerHTML = '';
-
-                for (let i = 0; i < users.length; i++ ) {
-
-                    let list_item = document.createElement('li');
-                    list_item.className = 'list-group-item';
-                    list_item.innerHTML = users[i].name;
-                    whos_online.appendChild(list_item);
-                }
-            }
-            
-        });
+        }
+        
+    });
 
     setTimeout(getAllOnline, 15000);
 }
