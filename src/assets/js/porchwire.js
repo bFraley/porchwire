@@ -49,6 +49,34 @@ async function getAllOnline() {
     setTimeout(getAllOnline, 15000);
 }
 
+// Local Storage Helpers
+
+let porchwireLocalStorage = {
+    test: true,
+    id: null
+}
+
+let pwApp = 'porchwireApp';
+
+// Set local storage porchwireApp.keyname = val
+function setLocalItem(keyname, val) {
+    porchwireLocalStorage[keyname] = val;
+    return localStorage.setItem(pwApp, JSON.stringify(porchwireLocalStorage));
+}
+
+// Get local storage porchwireApp.keyname
+function getLocalItem(keyname) {
+    let localData = JSON.parse(localStorage.getItem(pwApp));
+    return localData[keyname];
+}
+
+function tryLocalData() {
+    if (localStorage.getItem(pwApp))
+        return true;
+    else
+        return false;
+} 
+
 let connected;
 let reconnect_try_count = 0;
 let HOST = 'localhost';
@@ -68,6 +96,7 @@ window.onload = function() {
     let connect_jam = byId('connect-jam');
     let audio = byId('audio');
 
+    let userId = byId('user');
     let edit_peerId = byId('edit-peerId');
     let connected_as_peerId = byId('connected-as-peerId');
     let init_peer_link = byId('init-peer-link');
@@ -183,6 +212,8 @@ window.onload = function() {
             }
         );
 
+        setLocalItem('id', peer.id);
+
         window.peerUser = peer;
 
         peer.on('open', function(id) {
@@ -246,6 +277,14 @@ window.onload = function() {
         peer.destroy();
         toggleConnectionUI(0);
     }, false);
+
+
+    // If 'porchwireApp' is in localStorage, if id is set,
+    // reuse this name initially in edit_peerId element
+    if (tryLocalData()) {
+        let id = getLocalItem('id');
+        userId.value = id;
+    }
 
     // Init start get all online users
     getAllOnline();
