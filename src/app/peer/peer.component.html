@@ -6,18 +6,21 @@
         </div>
 
         <div id="edit-peerId">
-                <button id="init-peer-link" type="button" class="d-inline btn btn-link">Connect as:</button>
-
+                
+            <label>Name
                 <input [(ngModel)]="peer.peerId" class="form-control" id="user"
                 placeholder="{{ peer.peerId }}" value="{{ peer.peerId }}">
+            </label>
+
+            <button id="init-peer-link" type="button" class="btn btn-info btn-sm">Connect</button>
         </div>
 
         <div id="connect-to-wrapper">
-            <label>Start jam with:
+            <label>Jam with...
                 <input class="form-control" id="connect-to" value="">
             </label>
 
-            <button type="button" id="connect-jam" class="btn btn-success">Jam</button>
+            <button type="button" id="connect-jam" class="btn btn-info btn-sm">Jam</button>
             <hr>
         </div>
     </div> <!-- ./col -->
@@ -38,7 +41,7 @@
 <div class="row">
     <div class="col">
         <textarea class="form-control" id="chat-input"></textarea>
-        <button type="button" id="send-button" class="btn btn-primary">Send</button>
+        <button type="button" id="send-button" class="btn btn-info btn-sm">Send</button>
     </div>
 
     <div class="col">
