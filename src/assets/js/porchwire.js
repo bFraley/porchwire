@@ -4,10 +4,12 @@
 function byId(name) { return document.getElementById(name); }
 function getUserId() { return byId('user').value; }
 
-function create_par(parent, msg) {
-    var p = document.createElement('p');
-    parent.appendChild(p);
-    p.innerText = msg;
+// Append a child list element and it's innerText (content) to a (parent) <ul> element
+function appendListItem(parent, content) {
+    let item = document.createElement('li');
+    item.className = 'list-group-item';
+    parent.appendChild(item);
+    item.innerText = content;
 }
 
 // PING for socket keepalive
@@ -30,17 +32,14 @@ async function getAllOnline() {
     .then(function(users) {
 
         if (users === undefined || users.length < 1) {
-            whos_online.innerHTML = '<li class="list-group-item">' + '0 Users Online' + '</li>';
+            whos_online.innerHTML = '';
+            appendListItem(whos_online, '0 Users Online');
         }
         else {
             whos_online.innerHTML = '';
 
             for (let i = 0; i < users.length; i++ ) {
-
-                let list_item = document.createElement('li');
-                list_item.className = 'list-group-item';
-                list_item.innerHTML = users[i].name;
-                whos_online.appendChild(list_item);
+                appendListItem(whos_online, users[i].name);
             }
         }
         
@@ -120,7 +119,7 @@ window.onload = function() {
 
     // Append new chat message to UI
     function addChatMsg(msg) {
-        create_par(conversation, msg);
+        appendListItem(conversation, msg);
         conversation.scrollTop = conversation.scrollHeight;
     }
 

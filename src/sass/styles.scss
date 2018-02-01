@@ -2,8 +2,8 @@
 
 @import "node_modules/bootstrap/scss/bootstrap";
 
-@import './variables';
-@import './mixins';
+@import './_variables';
+@import './_mixins';
 
 /* BS4 Overrides */
 $body-bg: $gray-800;
@@ -43,11 +43,10 @@ html {
     height: 200px;
     overflow-y: scroll;
     padding: 0;
+    font-size: 0.85rem;
 }
 
-#conversation p {
-    margin: 0;
-    padding: 1px;
+#conversation li {
     border-top: solid 1px #ddd;
     border-bottom: solid 1px #ddd;
 }
