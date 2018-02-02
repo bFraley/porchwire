@@ -1,7 +1,11 @@
 <div class="row">
     <div class="col">
         <div id="connected-as-peerId">
-            <p class="d-inline"><strong>Connected as {{ peer.peerId }}</strong></p>
+        
+            <p class="d-inline">
+                <strong>Connected as <span id="ngPeer">{{ peer.peerId }}</span></strong>
+            </p>
+
             <button id="change-peerId-link" type="button" class="btn btn-sm btn-link">Change</button>
         </div>
 
@@ -36,6 +40,12 @@
 <div class="row" id="audio-wrapper">
     <p>Audio</p>
     <audio controls id="audio" src="" type="audio/ogg; codecs=opus"></audio>
+    <button type="button" id="start-record">Record</button>
+    <button type="button" id="stop-record">Stop</button>
+
+    <a href="" id="download-recording" download="true">Download Recording</a>
+
+    <audio src="" id="play-recording"></audio>
 </div>
 
 <div class="row">

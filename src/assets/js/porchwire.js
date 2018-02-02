@@ -1,5 +1,6 @@
 /* Porchwire Project Copright 2018 */
 
+
 // DOM Helpers
 function byId(name) { return document.getElementById(name); }
 function getUserId() { return byId('user').value; }
@@ -81,6 +82,10 @@ let reconnect_try_count = 0;
 let HOST = 'localhost';
 let PORT = 4200;
 
+/* Global Audio Values */
+let AUDIO_STREAM;
+let ACTIVE_RECORDING_TRACK;
+
 window.onload = function() {
 
     // Set deployment host and port
@@ -89,6 +94,7 @@ window.onload = function() {
         PORT = '';
     }
 
+    let ngPeer = byId('ngPeer');
     let chat_input = byId('chat-input');
     let send_button = byId('send-button');
     let conversation = byId('conversation');
@@ -101,6 +107,13 @@ window.onload = function() {
     let init_peer_link = byId('init-peer-link');
     let change_peerId_link = byId('change-peerId-link');
     let connect_to_wrapper = byId('connect-to-wrapper');
+
+    // Recording UI
+    let start_record = byId('start-record');
+    let stop_record = byId('stop-record');
+
+    let download_recording = byId('download-recording');
+    let play_recording = byId('play-recording');
 
     // Toggle show of 'connect as' and 'connected' elements
     // showConnected 1 to show 'connected', 0 for 'connect as'
@@ -126,6 +139,36 @@ window.onload = function() {
     // Converts stream to objectURL to play in audio element
     function streamAudio(stream) {
         audio.src = (URL || webkitURL || mozURL).createObjectURL(stream);
+    }
+
+    function recordAudio(stream, options) {
+
+        let blobfile;
+        let chunks = [];
+        let track = new MediaRecorder(stream);
+        console.log(track);
+
+        track.start();
+
+        track.ondataavailable = function(chunk) {
+            chunks.push(chunk.data);
+        }
+
+        track.onstop = function() {
+            blobfile = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+            chunks = [];
+            console.log('Recording Stopped: Blob output:\n');
+            console.log(blobfile);
+
+            let file = window.URL.createObjectURL(blobfile);
+
+            download_recording.href = file;
+            download_recording.download = file;
+            play_recording.src = file;
+            
+        }
+
+        ACTIVE_RECORDING_TRACK = track;
     }
 
     // User clicked Connect to initiate a call. Creates a peer to peer
@@ -166,20 +209,24 @@ window.onload = function() {
 
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-        navigator.getUserMedia({video:false, audio: true}, function(stream) {
-
+        navigator.getUserMedia({video: false, audio: true}, function(stream) {
+        
+        // CALL
             var ID = byId('connect-to').value;
             var call = peer.call(ID, stream);
 
             call.on('stream', function(remoteStream) {
+
+                AUDIO_STREAM = remoteStream;
                 streamAudio(remoteStream);
+
             });
 
         }, function(err) {
             console.log('Failed to get local stream' ,err);
         });
 
-        //ANSWER
+        // ANSWER
         peer.on('call', function(call) {
 
             // Get user media stream and answer the call with stream
@@ -187,7 +234,8 @@ window.onload = function() {
                 call.answer(stream); // Answer the call
 
                 call.on('stream', function(remoteStream) {
-                    // converts stream to objectURL to play in audio element
+
+                    AUDIO_STREAM = remoteStream;
                     streamAudio(remoteStream);
                 });
 
@@ -216,6 +264,8 @@ window.onload = function() {
         window.peerUser = peer;
 
         peer.on('open', function(id) {
+
+            ngPeer.innerText = id;
             console.log('Your peer ID is: ' + id);
 
             // Init async socket ping
@@ -275,6 +325,27 @@ window.onload = function() {
     change_peerId_link.addEventListener('click', function() {
         peer.destroy();
         toggleConnectionUI(0);
+    }, false);
+
+    // Start Recording Button
+    start_record.addEventListener('click', function() {
+        console.log(AUDIO_STREAM);
+        
+        if (AUDIO_STREAM) {
+            recordAudio(AUDIO_STREAM);
+        }
+
+    }, false);
+
+    // Stop Recording Button
+    stop_record.addEventListener('click', function() {
+        console.log(ACTIVE_RECORDING_TRACK);
+        
+        if (ACTIVE_RECORDING_TRACK) {
+            ACTIVE_RECORDING_TRACK.stop();
+            console.log('Recording Stopped');
+        }
+
     }, false);
 
 
