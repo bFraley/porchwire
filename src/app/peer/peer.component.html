@@ -1,7 +1,11 @@
 <div class="row">
-    <div class="col">
+
+    <!-- Left Col -->
+    <div class="col-7">
+
+        <!-- Connected As -->
         <div id="connected-as-peerId">
-        
+
             <p class="d-inline">
                 <strong>Connected as <span id="ngPeer">{{ peer.peerId }}</span></strong>
             </p>
@@ -9,6 +13,7 @@
             <button id="change-peerId-link" type="button" class="btn btn-sm btn-link">Change</button>
         </div>
 
+        <!-- Name Input -->
         <div id="edit-peerId">
                 
             <label>Name
@@ -19,6 +24,7 @@
             <button id="init-peer-link" type="button" class="btn btn-info btn-sm">Connect</button>
         </div>
 
+        <!-- New Jam -->
         <div id="connect-to-wrapper">
             <label>Jam with...
                 <input class="form-control" id="connect-to" value="">
@@ -27,37 +33,45 @@
             <button type="button" id="connect-jam" class="btn btn-info btn-sm">Jam</button>
             <hr>
         </div>
+
+        <div class="d-none" id="audio-wrapper">
+
+            <p class="d-block">Audio Stream</p>
+            <audio controls class="d-block" id="audio" src="" type="audio/ogg; codecs=opus"></audio>
+            <hr>
+
+            <p class="d-block">Record</p>
+            <button type="button" id="start-record" class="btn-outline-danger">Record</button>
+            <button type="button" id="stop-record" class="btn-outline-secondary">Stop</button>
+
+            <section id="recorded-section" class="d-none">
+                <audio controls src="" id="play-recording"></audio>
+                <a href="" id="download-recording" download>Download Recording</a>
+            </section>
+
+        </div>
+
     </div> <!-- ./col -->
 
-    <div class="col">
+    <!-- Right Col -->
+    <div class="col-5">
+
+        <!-- Whos Online -->
         <div class="card">
             <div class="card-header">Who's Online</div>
             <ul id="whos-online" class="list-group list-group-flush"></ul>
         </div>
-    </div> <!-- ./col -->
-</div> <!-- ./row -->
 
-<div class="row" id="audio-wrapper">
-    <p>Audio</p>
-    <audio controls id="audio" src="" type="audio/ogg; codecs=opus"></audio>
-    <button type="button" id="start-record">Record</button>
-    <button type="button" id="stop-record">Stop</button>
-
-    <a href="" id="download-recording" download="true">Download Recording</a>
-
-    <audio src="" id="play-recording"></audio>
-</div>
-
-<div class="row">
-    <div class="col">
-        <textarea class="form-control" id="chat-input"></textarea>
-        <button type="button" id="send-button" class="btn btn-info btn-sm">Send</button>
-    </div>
-
-    <div class="col">
+        <!-- Messages -->
         <div class="card">
             <div class="card-header">Messages</div>
-            <ul id="conversation" class="list-group list-group-flush"></ul>
+
+            <textarea class="d-block form-control" id="chat-input" placeholder=" ... "></textarea>
+            <button type="button" id="send-button" class="btn btn-info btn-sm d-block">Send</button>
+            <hr>
+
+            <ul class="d-block" id="conversation" class="list-group list-group-flush"></ul>
         </div>
-    </div> <!-- ./col --> 
+
+    </div> <!-- ./col -->
 </div> <!-- ./row -->

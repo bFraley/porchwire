@@ -109,6 +109,8 @@ window.onload = function() {
     let connect_to_wrapper = byId('connect-to-wrapper');
 
     // Recording UI
+    let audio_wrapper = byId('audio-wrapper');
+    let recorded_section = byId('recorded-section');
     let start_record = byId('start-record');
     let stop_record = byId('stop-record');
 
@@ -164,6 +166,7 @@ window.onload = function() {
 
             download_recording.href = file;
             download_recording.download = file;
+            download_recording.style.display = "block";
             play_recording.src = file;
             
         }
@@ -220,6 +223,8 @@ window.onload = function() {
                 AUDIO_STREAM = remoteStream;
                 streamAudio(remoteStream);
 
+                audio_wrapper.className = "d-block";
+
             });
 
         }, function(err) {
@@ -237,6 +242,8 @@ window.onload = function() {
 
                     AUDIO_STREAM = remoteStream;
                     streamAudio(remoteStream);
+
+                    audio_wrapper.className = "d-block";
                 });
 
             }, function(err) {
@@ -285,6 +292,8 @@ window.onload = function() {
                 console.log('lost connection, attempting to reconnect');
 
                 if (peer.reconnect()) {
+
+                    reconnect_try_count = 0;
                     console.log('Reconnected: ID: ' + id);
                 }
                 else {
@@ -308,8 +317,10 @@ window.onload = function() {
     send_button.addEventListener('click', function() {
 
         let sent_message = chat_input.value;
+        let you_sent = 'You: ' + sent_message;
+
         connected.send(sent_message);
-        addChatMsg('You: ' + sent_message);
+        addChatMsg(you_sent);
 
         chat_input.value = '';
     }, false);
@@ -329,6 +340,14 @@ window.onload = function() {
 
     // Start Recording Button
     start_record.addEventListener('click', function() {
+
+        // Recording started - switch buttons
+        this.className = "btn-outline-secondary";
+        this.disabled = true;
+
+        stop_record.className = "btn-outline-danger";
+        stop_record.disabled = false;
+
         console.log(AUDIO_STREAM);
         
         if (AUDIO_STREAM) {
@@ -345,6 +364,15 @@ window.onload = function() {
             ACTIVE_RECORDING_TRACK.stop();
             console.log('Recording Stopped');
         }
+
+        // Recording stopped - switch buttons and display recorded section ui
+        this.className = "btn-outline-secondary";
+        this.disabled = true;
+
+        start_record.className = "btn-outline-danger";
+        start_record.disabled = false;
+
+        recorded_section.className = "d-block";
 
     }, false);
 
