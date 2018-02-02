@@ -32,12 +32,12 @@ async function getAllOnline() {
     .then(function(response) { return response.json(); })
     .then(function(users) {
 
+        whos_online.innerHTML = '';
+
         if (users === undefined || users.length < 1) {
-            whos_online.innerHTML = '';
             appendListItem(whos_online, '0 Users Online');
         }
         else {
-            whos_online.innerHTML = '';
 
             for (let i = 0; i < users.length; i++ ) {
                 appendListItem(whos_online, users[i].name);
