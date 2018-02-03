@@ -336,6 +336,10 @@ window.onload = function() {
     change_peerId_link.addEventListener('click', function() {
         peer.destroy();
         toggleConnectionUI(0);
+
+        // Hide Stream and Record Audio Wrapper
+        audio_wrapper.className = "d-none";
+
     }, false);
 
     // Start Recording Button

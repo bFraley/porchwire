@@ -32,9 +32,9 @@ let PW = {
             let el = document.createElement(htmltag);
             el.type = 'button';
             el.className = 'g-savetodrive';
-            el.setAttribute('data-src', src);
-            el.setAttribute('data-filename', fname);
-            el.setAttribute('data-sitename', sitename);
+            el.setAttribute('data-src', this.src);
+            el.setAttribute('data-filename', this.fname);
+            el.setAttribute('data-sitename', this.sitename);
         },
 
     },
