@@ -102,6 +102,15 @@ window.onload = function() {
     let audio = byId('audio');
 
     let userId = byId('user');
+
+    // If 'porchwireApp' is in localStorage, if id is set,
+    // reuse this name initially in edit_peerId element.
+    // Execute this here right away after we have userId!
+    if (tryLocalData()) {
+        let id = getLocalItem('id');
+        userId.value = id;
+    }
+
     let edit_peerId = byId('edit-peerId');
     let connected_as_peerId = byId('connected-as-peerId');
     let init_peer_link = byId('init-peer-link');
@@ -110,12 +119,12 @@ window.onload = function() {
 
     // Recording UI
     let audio_wrapper = byId('audio-wrapper');
-    let recorded_section = byId('recorded-section');
+
     let start_record = byId('start-record');
     let stop_record = byId('stop-record');
 
-    let download_recording = byId('download-recording');
-    let play_recording = byId('play-recording');
+    // Wrapper where new recording elements get appended
+    let recording_session_files = byId('recording-session-files');
 
     // Toggle show of 'connect as' and 'connected' elements
     // showConnected 1 to show 'connected', 0 for 'connect as'
@@ -143,7 +152,7 @@ window.onload = function() {
         audio.src = (URL || webkitURL || mozURL).createObjectURL(stream);
     }
 
-    function recordAudio(stream, options) {
+    function recordAudio(stream) {
 
         let blobfile;
         let chunks = [];
@@ -164,10 +173,9 @@ window.onload = function() {
 
             let file = window.URL.createObjectURL(blobfile);
 
-            download_recording.href = file;
-            download_recording.download = file;
-            download_recording.style.display = "block";
-            play_recording.src = file;
+            let recorded_file_element = PW.UI.newRecordedFileElement(file);
+            
+            recording_session_files.appendChild(recorded_file_element);
             
         }
 
@@ -376,17 +384,10 @@ window.onload = function() {
         start_record.className = "btn-outline-danger";
         start_record.disabled = false;
 
-        recorded_section.className = "d-block";
+        recording_session_files.className = "d-block";
 
     }, false);
 
-
-    // If 'porchwireApp' is in localStorage, if id is set,
-    // reuse this name initially in edit_peerId element
-    if (tryLocalData()) {
-        let id = getLocalItem('id');
-        userId.value = id;
-    }
 
     // Init start get all online users
     getAllOnline();

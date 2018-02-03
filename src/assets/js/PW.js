@@ -18,6 +18,29 @@ let PW = {
     // Porchwire User Interface
     UI: {
 
+        // PW.UI.newRecordedFileElement(file)
+        // File is the result of call to window.URL.createObjectURL(blobfile);
+        newRecordedFileElement: function(file) {
+            this.file = file;
+            
+            let wrap = document.createElement('div');
+            wrap.className = "recorded-file-wrapper";
+
+            let audio = document.createElement('audio');
+            audio.setAttribute('controls', true);
+            audio.src = this.file;
+
+            let link = document.createElement('a');
+            link.innerText = "Download";
+            link.href = this.file;
+            link.setAttribute('download', this.file);
+
+            wrap.appendChild(audio);
+            wrap.appendChild(link);
+
+            return wrap;
+        },
+
     },
 
     // Work with Google Drive Elements

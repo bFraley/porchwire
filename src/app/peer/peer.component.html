@@ -40,15 +40,14 @@
             <audio controls class="d-block" id="audio" src="" type="audio/ogg; codecs=opus"></audio>
             <hr>
 
-            <p class="d-block">Record</p>
             <button type="button" id="start-record" class="btn-outline-danger">Record</button>
-            <button type="button" id="stop-record" class="btn-outline-secondary">Stop</button>
+            <button disabled type="button" id="stop-record" class="btn-outline-secondary">Stop</button>
+            <hr>
 
-            <section id="recorded-section" class="d-none">
-                <audio controls src="" id="play-recording"></audio>
-                <a href="" id="download-recording" download>Download Recording</a>
-            </section>
+        </div>
 
+        <div id="recording-session-files" class="d-none">
+            <!-- Recordings get appended here -->
         </div>
 
     </div> <!-- ./col -->
