@@ -33,12 +33,12 @@ html {
 }
 
 #porchwire {
-    margin: 1.5rem;
+  margin: 1.5rem;
 }
 
 #chat-input {
-    width: 90%;
-    margin: 15px auto;
+  width: 90%;
+  margin: 15px auto;
 }
 
 #send-button {
@@ -47,25 +47,25 @@ html {
 }
 
 #whos-online, #conversation {
-    height: 150px;
-    overflow-y: scroll;
-    padding: 0;
-    font-size: 0.85rem;
+  height: 150px;
+  overflow-y: scroll;
+  padding: 0;
+  font-size: 0.85rem;
 }
 
 #conversation li {
-    border-top: solid 1px #ddd;
-    border-bottom: solid 1px #ddd;
+  border-top: solid 1px #ddd;
+  border-bottom: solid 1px #ddd;
 }
 
 /* Initial display rules for 'connect me as' and 'connected as' */
 #connected-as-peerId,
 #connect-to-wrapper {
-    display: none;
+  display: none;
 }
 
 #edit-peerId {
-    display: block;
+  display: block;
 }
 
 .card, #send-button {
@@ -73,6 +73,10 @@ html {
 }
 
 #start-record, #stop-record {
-    border-radius: 20px;
-    padding: 10px;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.download-icon {
+  margin: 0px 10px;  
 }

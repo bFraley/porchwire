@@ -31,12 +31,23 @@ let PW = {
             audio.src = this.file;
 
             let link = document.createElement('a');
-            link.innerText = "Download";
+            link.className = "download-icon";
+            link.innerHTML = '<i class="fas fa-download"></i>';
             link.href = this.file;
             link.setAttribute('download', this.file);
 
+            let gdrive = PW.gdrive.newSaveToDriveElement(
+                'span',
+                this.file,
+                'Porchwire-Audio-' + Date.now() + '.ogg',
+                'Porchwire'
+            );
+
+            gdrive.innerHTML = '<i class="fab fa-google-drive"></i>';
+
             wrap.appendChild(audio);
             wrap.appendChild(link);
+            wrap.appendChild(gdrive);
 
             return wrap;
         },
@@ -53,11 +64,13 @@ let PW = {
             this.sitename = sitename;
 
             let el = document.createElement(htmltag);
-            el.type = 'button';
+            el.type = htmltag;
             el.className = 'g-savetodrive';
             el.setAttribute('data-src', this.src);
             el.setAttribute('data-filename', this.fname);
             el.setAttribute('data-sitename', this.sitename);
+
+            return el;
         },
 
     },
