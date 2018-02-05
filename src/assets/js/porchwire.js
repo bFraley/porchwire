@@ -15,7 +15,7 @@ function appendListItem(parent, content) {
 
 // PING for socket keepalive
 async function porchPing() {
-    if (window.peerUser && window.peerUser.socket) {
+    if (window.peerUser && !window.peerUser.socket.disconnected) {
         window.peerUser.socket.send({type: 'ping'});
         console.log('ping');
     }
