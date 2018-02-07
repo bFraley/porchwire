@@ -38,6 +38,12 @@
 
             <p class="d-block">Audio Stream</p>
             <audio controls class="d-block" id="audio" src="" type="audio/ogg; codecs=opus"></audio>
+
+             <!-- Audio Control Panel UI -->
+             <div class="row">
+                 <canvas id="local-stream-meter" class="col-6" height="75px"></canvas>
+                <canvas id="remote-stream-meter" class="col-6" height="75px"></canvas>
+             </div>
             <hr>
 
             <button type="button" id="start-record" class="btn-outline-danger">Record</button>
@@ -45,10 +51,6 @@
             <hr>
 
         </div>
-
-        <!-- Audio Control Panel UI -->
-        <canvas id="local-stream-meter" width="50%" height="150px"></canvas>
-        <canvas id="remote-stream-meter" width="50%" height="150px"></canvas>
 
         <!-- Recordings get appended here -->
         <div id="recording-session-files" class="d-none"></div>

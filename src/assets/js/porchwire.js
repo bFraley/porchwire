@@ -29,9 +29,7 @@ async function getAllOnline() {
     let whos_online = byId('whos-online');
 
     fetch(route, { method: 'get'})
-    .then(function(response) { 
-        let users = response.json;
-    })
+    .then(function(response) { return response.json(); })
     .then(function(users) {
 
         whos_online.innerHTML = '';
@@ -141,7 +139,7 @@ window.onload = function() {
         // outputs window.URL.createObjectURL(blobfile) to recording_session_files
         // container of audio elements
 
-        recordAudio async function(stream_input) {
+        recordAudio: async function(stream_input) {
 
             let blobfile;
             let chunks = [];
@@ -181,7 +179,7 @@ window.onload = function() {
         },
 
         remote_stream_meter: function() {
-            return byId('remote_stream_meter');
+            return byId('remote-stream-meter');
         },
 
         // Init a WebAudio audio context
@@ -199,9 +197,9 @@ window.onload = function() {
         // https://github.com/mdn/web-dictaphone/blob/gh-pages/scripts/app.js
 
         // Prepare audio and call drawStreamMeter
-        // initStreamMedia is the primary PWAudio method called by launchStreamMeters
+        // initStreamMeters is the primary PWAudio method called by launchStreamMeters
 
-        initStreamMedia: function(stream, audioContext, meterCanvas) {
+        initStreamMeters: async function(stream, audioContext, meterCanvas, canvasContext) {
 
             let streamData = audioContext.createMediaStreamSource(stream);
 
@@ -214,59 +212,74 @@ window.onload = function() {
             streamData.connect(analyser);
             //analyser.connect(audioContext.destination);
 
+            let WIDTH, HEIGHT, sliceWidth, x, y, v, i;
+            let fill = 'rgb(238, 238, 238)';
+            let stroke = 'rgb(136, 255, 0)';
+
             // Call drawStreamMeter defined below
-            PWAudio.initStreamMedia(meterCanvas, )
-        }
+            drawStreamMeter(stream);
 
-        drawStreamMeter: function(meterCanvas, canvasContext) {
+            // meterCanvas is html canvas node, context is the 2d context of meterCanvas,
+            // Analyzer node param is analyser from createAnalyzer above,
+            // dataArray from above is Uint8Array audio of audio samples
 
-            let WIDTH = meterCanvas.width
-            let HEIGHT = meterCanvas.height;
+            function drawStreamMeter(stream) {
 
-            requestAnimationFrame(PWAudio.drawStreamMeter);
+                requestAnimationFrame(drawStreamMeter);
 
-            analyser.getByteTimeDomainData(dataArray);
+                WIDTH = meterCanvas.width
+                HEIGHT = meterCanvas.height;
+                sliceWidth = WIDTH * 1.0 / bufferLength;
 
-            canvasContext.fillStyle = 'rgb(200, 200, 200)';
-            canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+                analyser.getByteTimeDomainData(dataArray);
 
-            canvasContext.lineWidth = 2;
-            canvasContext.strokeStyle = 'rgb(0, 0, 0)';
+                canvasContext.fillStyle = fill;
+                canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
 
-            canvasContext.beginPath();
+                canvasContext.lineWidth = 2;
+                canvasContext.strokeStyle = stroke;
 
-            let sliceWidth = WIDTH * 1.0 / bufferLength;
-            let x = 0;
+                canvasContext.beginPath();
 
+                x = 0;
 
-            for(let i = 0; i < bufferLength; i++) {
-         
-                let v = dataArray[i] / 128.0;
-                let y = v * HEIGHT/2;
+                for(i; i < bufferLength; i++) {
+             
+                    v = dataArray[i] / 128.0;
+                    y = v * HEIGHT/2;
 
-                if(i === 0) {
-                    canvasContext.moveTo(x, y);
+                    if (!i) {
+                        canvasContext.moveTo(x, y);
+                    }
+                    else {
+                        canvasContext.lineTo(x, y);
+                    }
+
+                    x += sliceWidth;
                 }
-                else {
-                    canvasContext.lineTo(x, y);
-                }
 
-                x += sliceWidth;
+                i = 0;
+
+                canvasContext.lineTo(WIDTH, HEIGHT/2);
+                canvasContext.stroke();
+
             }
-
-            canvasContext.lineTo(meterCanvas.width, meterCanvas.height/2);
-            canvasContext.stroke();
-
         },
+
+        
 
     }; // end PWAudio
 
-    // Wrapper around methods in PWAudio to launch the audio stream wave meters
-    function launchStreamMeters(stream_input) {
-        let audio_context = PWAudio.newAudioContext();
-        let canvas_context = PWAudio.newCanvasContext();
+    // Local and Remote Audio Wave Meters
+    let local_meter = PWAudio.local_stream_meter();
+    let remote_meter = PWAudio.remote_stream_meter();
 
-        PWAudio.initStreamMedia(stream_input, audio_context, canvas_context);
+    // Wrapper around methods in PWAudio to launch the audio stream wave meters
+    function launchStreamMeters(stream_input, meterCanvas) {
+        let audio_context = PWAudio.newAudioContext();
+        let canvas_context = PWAudio.newCanvasContext(meterCanvas);
+
+        PWAudio.initStreamMeters(stream_input, audio_context, meterCanvas, canvas_context);
     }
 
     // Toggle show of 'connect as' and 'connected' elements
@@ -339,7 +352,10 @@ window.onload = function() {
                 AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
                 PWAudio.streamAudio(remoteStream);
 
-                launchStreamMeters(remoteStream);
+                
+                launchStreamMeters(remoteStream, local_meter);
+                launchStreamMeters(remoteStream, remote_meter);
+
                 audio_wrapper.className = "d-block";
 
             });
@@ -360,9 +376,12 @@ window.onload = function() {
                     AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
                     PWAudio.streamAudio(remoteStream);
 
-                    launchStreamMeters(remoteStream);
-                    audio_wrapper.className = "d-block";
                     
+                    launchStreamMeters(remoteStream, local_meter);
+                    launchStreamMeters(remoteStream, remote_meter);
+
+                    audio_wrapper.className = "d-block";
+
                 });
 
             }, function(err) {
@@ -466,12 +485,18 @@ window.onload = function() {
     function toggleRecordStopButtons(recordState) {
 
         if (recordState) {
-            start_record.className = "btn-outline-danger";
-            start_record.disabled = false;
-        }
-        else {
+            start_record.className = "btn-outline-secondary";
+            start_record.disabled = true;
+
             stop_record.className = "btn-outline-danger";
             stop_record.disabled = false;
+        }
+        else {
+            stop_record.className = "btn-outline-secondary";
+            stop_record.disabled = true;
+
+            start_record.className = "btn-outline-danger";
+            start_record.disabled = false;
         }
     } 
 
@@ -491,7 +516,7 @@ window.onload = function() {
     // Stop Recording Button
     stop_record.addEventListener('click', function() {
 
-        toggleRecordStopButtons(1);
+        toggleRecordStopButtons(0);
 
         console.log(ACTIVE_RECORDING_TRACK);
         

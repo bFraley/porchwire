@@ -58,18 +58,12 @@ html {
   border-bottom: solid 1px #ddd;
 }
 
-/* Initial display rules for 'connect me as' and 'connected as' */
-#connected-as-peerId,
-#connect-to-wrapper {
-  display: none;
-}
-
-#edit-peerId {
-  display: block;
-}
-
 .card, #send-button {
   margin-bottom: 15px;
+}
+
+#audio {
+    margin-bottom: 10px;
 }
 
 #start-record, #stop-record {
