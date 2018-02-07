@@ -4,7 +4,7 @@
     <div class="col-7">
 
         <!-- Connected As -->
-        <div id="connected-as-peerId">
+        <div id="connected-as-peerId" class="d-none">
 
             <p class="d-inline">
                 <strong>Connected as <span id="ngPeer">{{ peer.peerId }}</span></strong>
@@ -14,7 +14,7 @@
         </div>
 
         <!-- Name Input -->
-        <div id="edit-peerId">
+        <div id="edit-peerId" class="d-block">
                 
             <label>Name
                 <input [(ngModel)]="peer.peerId" class="form-control" id="user"
@@ -25,7 +25,7 @@
         </div>
 
         <!-- New Jam -->
-        <div id="connect-to-wrapper">
+        <div id="connect-to-wrapper" class="d-none">
             <label>Jam with...
                 <input class="form-control" id="connect-to" value="">
             </label>
@@ -46,9 +46,12 @@
 
         </div>
 
-        <div id="recording-session-files" class="d-none">
-            <!-- Recordings get appended here -->
-        </div>
+        <!-- Audio Control Panel UI -->
+        <canvas id="local-stream-meter" width="50%" height="150px"></canvas>
+        <canvas id="remote-stream-meter" width="50%" height="150px"></canvas>
+
+        <!-- Recordings get appended here -->
+        <div id="recording-session-files" class="d-none"></div>
 
     </div> <!-- ./col -->
 

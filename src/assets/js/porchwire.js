@@ -128,18 +128,159 @@ window.onload = function() {
     // Wrapper where new recording elements get appended
     let recording_session_files = byId('recording-session-files');
 
+    // Audio Controls UI
+    let PWAudio = {
+
+        // Converts stream to objectURL to play in audio element
+        streamAudio: async function(stream_input) {
+            audio.src = (URL || webkitURL || mozURL).createObjectURL(stream_input);
+        },
+
+
+        // Initial implementation of recording local and remote audio streams,
+        // outputs window.URL.createObjectURL(blobfile) to recording_session_files
+        // container of audio elements
+
+        recordAudio async function(stream_input) {
+
+            let blobfile;
+            let chunks = [];
+            let track = new MediaRecorder(stream_input);
+            track.mimType = 'audio/ogg; codecs=opus';
+            console.log(track);
+
+            track.start();
+
+            track.ondataavailable = function(chunk) {
+                chunks.push(chunk.data);
+            }
+
+            track.onstop = function() {
+                blobfile = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
+                chunks = [];
+                console.log('Recording Stopped: Blob output:\n');
+                console.log(blobfile);
+
+                let file = window.URL.createObjectURL(blobfile);
+
+                let recorded_file_element = PW.UI.newRecordedFileElement(file);
+                
+                recording_session_files.appendChild(recorded_file_element);
+                
+            }
+
+            ACTIVE_RECORDING_TRACK = track;
+        },
+
+        // Local 'hosts' machine audio wave meter and
+        // Remote peer's incoming stream audio wave meter
+        // Note: this currently assumes a single local and single remote stream.
+
+        local_stream_meter:  function() {
+            return byId('local-stream-meter');
+        },
+
+        remote_stream_meter: function() {
+            return byId('remote_stream_meter');
+        },
+
+        // Init a WebAudio audio context
+        newAudioContext: function() {
+            return new (window.AudioContext || webkitAudioContext)();
+        },
+
+        // Init a 2d canvas context, accepts the html canvs 
+        // element that will visualize an audio wave
+        newCanvasContext: function(htmlCanvas) {
+            return htmlCanvas.getContext("2d");
+        },
+
+        //Acknowlegement: Originally based on MDN dictaphone example at:
+        // https://github.com/mdn/web-dictaphone/blob/gh-pages/scripts/app.js
+
+        // Prepare audio and call drawStreamMeter
+        // initStreamMedia is the primary PWAudio method called by launchStreamMeters
+
+        initStreamMedia: function(stream, audioContext, meterCanvas) {
+
+            let streamData = audioContext.createMediaStreamSource(stream);
+
+            let analyser = audioContext.createAnalyser();
+            analyser.fftSize = 2048;
+
+            let bufferLength = analyser.frequencyBinCount;
+            let dataArray = new Uint8Array(bufferLength);
+
+            streamData.connect(analyser);
+            //analyser.connect(audioContext.destination);
+
+            // Call drawStreamMeter defined below
+            PWAudio.initStreamMedia(meterCanvas, )
+        }
+
+        drawStreamMeter: function(meterCanvas, canvasContext) {
+
+            let WIDTH = meterCanvas.width
+            let HEIGHT = meterCanvas.height;
+
+            requestAnimationFrame(PWAudio.drawStreamMeter);
+
+            analyser.getByteTimeDomainData(dataArray);
+
+            canvasContext.fillStyle = 'rgb(200, 200, 200)';
+            canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+
+            canvasContext.lineWidth = 2;
+            canvasContext.strokeStyle = 'rgb(0, 0, 0)';
+
+            canvasContext.beginPath();
+
+            let sliceWidth = WIDTH * 1.0 / bufferLength;
+            let x = 0;
+
+
+            for(let i = 0; i < bufferLength; i++) {
+         
+                let v = dataArray[i] / 128.0;
+                let y = v * HEIGHT/2;
+
+                if(i === 0) {
+                    canvasContext.moveTo(x, y);
+                }
+                else {
+                    canvasContext.lineTo(x, y);
+                }
+
+                x += sliceWidth;
+            }
+
+            canvasContext.lineTo(meterCanvas.width, meterCanvas.height/2);
+            canvasContext.stroke();
+
+        },
+
+    }; // end PWAudio
+
+    // Wrapper around methods in PWAudio to launch the audio stream wave meters
+    function launchStreamMeters(stream_input) {
+        let audio_context = PWAudio.newAudioContext();
+        let canvas_context = PWAudio.newCanvasContext();
+
+        PWAudio.initStreamMedia(stream_input, audio_context, canvas_context);
+    }
+
     // Toggle show of 'connect as' and 'connected' elements
     // showConnected 1 to show 'connected', 0 for 'connect as'
     function toggleConnectionUI(showConnected) {
         if (showConnected) {
-            connected_as_peerId.style.display = 'block';
-            connect_to_wrapper.style.display = 'block';
-            edit_peerId.style.display = 'none';
+            connected_as_peerId.className = "d-block";
+            connect_to_wrapper.className = "d-block";
+            edit_peerId.className = "d-none";
         }
         else {
-            connected_as_peerId.style.display = 'none';
-            connect_to_wrapper.style.display = 'none';
-            edit_peerId.style.display = 'block';
+            connected_as_peerId.className = "d-none";
+            connect_to_wrapper.className = "d-none";
+            edit_peerId.className = "d-block";
         }
     }
 
@@ -147,41 +288,6 @@ window.onload = function() {
     function addChatMsg(msg) {
         appendListItem(conversation, msg);
         conversation.scrollTop = conversation.scrollHeight;
-    }
-
-    // Converts stream to objectURL to play in audio element
-    function streamAudio(stream) {
-        audio.src = (URL || webkitURL || mozURL).createObjectURL(stream);
-    }
-
-    function recordAudio(stream) {
-
-        let blobfile;
-        let chunks = [];
-        let track = new MediaRecorder(stream);
-        console.log(track);
-
-        track.start();
-
-        track.ondataavailable = function(chunk) {
-            chunks.push(chunk.data);
-        }
-
-        track.onstop = function() {
-            blobfile = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
-            chunks = [];
-            console.log('Recording Stopped: Blob output:\n');
-            console.log(blobfile);
-
-            let file = window.URL.createObjectURL(blobfile);
-
-            let recorded_file_element = PW.UI.newRecordedFileElement(file);
-            
-            recording_session_files.appendChild(recorded_file_element);
-            
-        }
-
-        ACTIVE_RECORDING_TRACK = track;
     }
 
     // User clicked Connect to initiate a call. Creates a peer to peer
@@ -230,9 +336,10 @@ window.onload = function() {
 
             call.on('stream', function(remoteStream) {
 
-                AUDIO_STREAM = remoteStream;
-                streamAudio(remoteStream);
+                AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
+                PWAudio.streamAudio(remoteStream);
 
+                launchStreamMeters(remoteStream);
                 audio_wrapper.className = "d-block";
 
             });
@@ -250,10 +357,12 @@ window.onload = function() {
 
                 call.on('stream', function(remoteStream) {
 
-                    AUDIO_STREAM = remoteStream;
-                    streamAudio(remoteStream);
+                    AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
+                    PWAudio.streamAudio(remoteStream);
 
+                    launchStreamMeters(remoteStream);
                     audio_wrapper.className = "d-block";
+                    
                 });
 
             }, function(err) {
@@ -374,7 +483,7 @@ window.onload = function() {
         console.log(AUDIO_STREAM);
         
         if (AUDIO_STREAM) {
-            recordAudio(AUDIO_STREAM);
+            PWAudio.recordAudio(AUDIO_STREAM);
         }
 
     }, false);
@@ -383,7 +492,7 @@ window.onload = function() {
     stop_record.addEventListener('click', function() {
 
         toggleRecordStopButtons(1);
-        
+
         console.log(ACTIVE_RECORDING_TRACK);
         
         if (ACTIVE_RECORDING_TRACK) {
