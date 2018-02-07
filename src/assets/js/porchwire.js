@@ -29,7 +29,9 @@ async function getAllOnline() {
     let whos_online = byId('whos-online');
 
     fetch(route, { method: 'get'})
-    .then(function(response) { return response.json(); })
+    .then(function(response) { 
+        let users = response.json;
+    })
     .then(function(users) {
 
         whos_online.innerHTML = '';
@@ -350,15 +352,24 @@ window.onload = function() {
 
     }, false);
 
+    //Audio Stream record and stop button UI switch
+    // Accepts boolean (recordState), 1 for record, 0 for stop.
+    function toggleRecordStopButtons(recordState) {
+
+        if (recordState) {
+            start_record.className = "btn-outline-danger";
+            start_record.disabled = false;
+        }
+        else {
+            stop_record.className = "btn-outline-danger";
+            stop_record.disabled = false;
+        }
+    } 
+
     // Start Recording Button
     start_record.addEventListener('click', function() {
 
-        // Recording started - switch buttons
-        this.className = "btn-outline-secondary";
-        this.disabled = true;
-
-        stop_record.className = "btn-outline-danger";
-        stop_record.disabled = false;
+        toggleRecordStopButtons(1);
 
         console.log(AUDIO_STREAM);
         
@@ -370,19 +381,15 @@ window.onload = function() {
 
     // Stop Recording Button
     stop_record.addEventListener('click', function() {
+
+        toggleRecordStopButtons(1);
+        
         console.log(ACTIVE_RECORDING_TRACK);
         
         if (ACTIVE_RECORDING_TRACK) {
             ACTIVE_RECORDING_TRACK.stop();
             console.log('Recording Stopped');
         }
-
-        // Recording stopped - switch buttons and display recorded section ui
-        this.className = "btn-outline-secondary";
-        this.disabled = true;
-
-        start_record.className = "btn-outline-danger";
-        start_record.disabled = false;
 
         recording_session_files.className = "d-block";
 
