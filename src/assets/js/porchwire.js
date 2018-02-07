@@ -120,6 +120,17 @@ window.onload = function() {
     // Recording UI
     let audio_wrapper = byId('audio-wrapper');
 
+    // Enable / disable meter buttons
+    let disable_local_meter_button = byId('disable-local-meter-button');
+    let enable_local_meter_button = byId('enable-local-meter-button');
+
+    let disable_remote_meter_button = byId('disable-remote-meter-button');
+    let enable_remote_meter_button = byId('enable-remote-meter-button');
+
+    // Reserves a frameId for each the local and remote meter animation frames
+    let local_meter_animation, remote_meter_animaton;
+    
+    // Start / Stop Recording buttons
     let start_record = byId('start-record');
     let stop_record = byId('stop-record');
 
@@ -193,13 +204,20 @@ window.onload = function() {
             return htmlCanvas.getContext("2d");
         },
 
+        // When user clicks to disable a stream meter, the animation frame's
+        // request ID is passed in and canceled via window.cancelAnimationFrame
+        disableStreamMeter: function(requestFrameId) {
+            cancelAnimationFrame(requestFrameId);
+        },
+
         //Acknowlegement: Originally based on MDN dictaphone example at:
         // https://github.com/mdn/web-dictaphone/blob/gh-pages/scripts/app.js
 
         // Prepare audio and call drawStreamMeter
-        // initStreamMeters is the primary PWAudio method called by launchStreamMeters
+        // initStreamMeters is the primary PWAudio method called by launchStreamMeters,
+        // frameId is accepts either 'local' or 'remote' for local_meter_animation or remote_meter_animation
 
-        initStreamMeters: async function(stream, audioContext, meterCanvas, canvasContext) {
+        initStreamMeters: async function(stream, audioContext, meterCanvas, canvasContext, frameId) {
 
             let streamData = audioContext.createMediaStreamSource(stream);
 
@@ -225,7 +243,12 @@ window.onload = function() {
 
             function drawStreamMeter(stream) {
 
-                requestAnimationFrame(drawStreamMeter);
+                if (frameId === 'local') {
+                    local_meter_animation = requestAnimationFrame(drawStreamMeter);
+                }
+                else if (frameId === 'remote') {
+                    remote_meter_animation = requestAnimationFrame(drawStreamMeter);
+                }
 
                 WIDTH = meterCanvas.width
                 HEIGHT = meterCanvas.height;
@@ -275,11 +298,11 @@ window.onload = function() {
     let remote_meter = PWAudio.remote_stream_meter();
 
     // Wrapper around methods in PWAudio to launch the audio stream wave meters
-    function launchStreamMeters(stream_input, meterCanvas) {
+    function launchStreamMeters(stream_input, meterCanvas, frameId) {
         let audio_context = PWAudio.newAudioContext();
         let canvas_context = PWAudio.newCanvasContext(meterCanvas);
 
-        PWAudio.initStreamMeters(stream_input, audio_context, meterCanvas, canvas_context);
+        PWAudio.initStreamMeters(stream_input, audio_context, meterCanvas, canvas_context, frameId);
     }
 
     // Toggle show of 'connect as' and 'connected' elements
@@ -353,8 +376,8 @@ window.onload = function() {
                 PWAudio.streamAudio(remoteStream);
 
                 
-                launchStreamMeters(remoteStream, local_meter);
-                launchStreamMeters(remoteStream, remote_meter);
+                launchStreamMeters(stream, local_meter, 'local');
+                launchStreamMeters(remoteStream, remote_meter, 'remote');
 
                 audio_wrapper.className = "d-block";
 
@@ -377,8 +400,8 @@ window.onload = function() {
                     PWAudio.streamAudio(remoteStream);
 
                     
-                    launchStreamMeters(remoteStream, local_meter);
-                    launchStreamMeters(remoteStream, remote_meter);
+                    launchStreamMeters(stream, local_meter, 'local');
+                    launchStreamMeters(remoteStream, remote_meter, 'remote');
 
                     audio_wrapper.className = "d-block";
 
@@ -479,6 +502,25 @@ window.onload = function() {
         audio_wrapper.className = "d-none";
 
     }, false);
+
+    // Enable and disable audio steam meter button listeners
+    disable_local_meter_button.addEventListener('click', function() {
+        cancelAnimationFrame(local_meter_animation);
+    }, false);
+
+    disable_remote_meter_button.addEventListener('click', function() {
+        cancelAnimationFrame(remote_meter_animation);
+    }, false);
+
+    /**
+    enable_local_meter_button.addEventListener('click', function() {
+        
+    }, false);
+
+    enable_remote_meter_button.addEventListener('click', function() {
+        
+    }, false);
+    **/
 
     //Audio Stream record and stop button UI switch
     // Accepts boolean (recordState), 1 for record, 0 for stop.

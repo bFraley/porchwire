@@ -34,16 +34,25 @@
             <hr>
         </div>
 
-        <div class="d-none" id="audio-wrapper">
+        <div class="d-none row" id="audio-wrapper">
 
             <p class="d-block">Audio Stream</p>
             <audio controls class="d-block" id="audio" src="" type="audio/ogg; codecs=opus"></audio>
 
              <!-- Audio Control Panel UI -->
-             <div class="row">
-                 <canvas id="local-stream-meter" class="col-6" height="75px"></canvas>
-                <canvas id="remote-stream-meter" class="col-6" height="75px"></canvas>
-             </div>
+            <div class="row">
+                <div class="col-xs-6">
+                    <button type="button" id="disable-local-meter-button" class="btn btn-secondary btn-sm">X</button>
+                    <button type="button" id="enable-local-meter-button" class="btn btn-secondary btn-sm">^^^</button>
+                    <canvas id="local-stream-meter" height="auto" width="auto"></canvas>     
+                </div>
+                
+                <div class="col-xs-6">
+                    <button type="button" id="disable-remote-meter-button" class="btn btn-secondary btn-sm">X</button>
+                    <button type="button" id="enable-remote-meter-button" class="btn btn-secondary btn-sm">^^^</button>
+                    <canvas id="remote-stream-meter" height="auto" width="auto"></canvas>
+                </div>
+            </div> <!-- ./row -->
             <hr>
 
             <button type="button" id="start-record" class="btn-outline-danger">Record</button>
