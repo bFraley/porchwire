@@ -85,6 +85,8 @@ let PORT = 4200;
 /* Global Audio Values */
 let AUDIO_STREAM;
 let ACTIVE_RECORDING_TRACK;
+let ACTIVE_LOCAL_STREAM;
+let ACTIVE_REMOTE_STREAM;
 
 window.onload = function() {
 
@@ -372,6 +374,9 @@ window.onload = function() {
 
             call.on('stream', function(remoteStream) {
 
+                ACTIVE_LOCAL_STREAM = stream;
+                ACTIVE_REMOTE_STREAM = remoteStream;
+
                 AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
                 PWAudio.streamAudio(remoteStream);
 
@@ -395,6 +400,9 @@ window.onload = function() {
                 call.answer(stream); // Answer the call
 
                 call.on('stream', function(remoteStream) {
+
+                    ACTIVE_LOCAL_STREAM = stream;
+                    ACTIVE_REMOTE_STREAM = remoteStream;
 
                     AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
                     PWAudio.streamAudio(remoteStream);
@@ -503,7 +511,7 @@ window.onload = function() {
 
     }, false);
 
-    // Enable and disable audio steam meter button listeners
+    // Enable and disable audio stream meter button listeners
     disable_local_meter_button.addEventListener('click', function() {
         cancelAnimationFrame(local_meter_animation);
     }, false);
@@ -512,15 +520,13 @@ window.onload = function() {
         cancelAnimationFrame(remote_meter_animation);
     }, false);
 
-    /**
     enable_local_meter_button.addEventListener('click', function() {
-        
+        launchStreamMeters(ACTIVE_LOCAL_STREAM, local_meter, 'local');       
     }, false);
 
     enable_remote_meter_button.addEventListener('click', function() {
-        
+        launchStreamMeters(ACTIVE_REMOTE_STREAM, remote_meter, 'remote'); 
     }, false);
-    **/
 
     //Audio Stream record and stop button UI switch
     // Accepts boolean (recordState), 1 for record, 0 for stop.
