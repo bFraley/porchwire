@@ -34,23 +34,35 @@
             <hr>
         </div>
 
-        <div class="d-none row" id="audio-wrapper">
+        <div class="d-none" id="audio-wrapper">
 
             <p class="d-block">Audio Stream</p>
             <audio controls class="d-block" id="audio" src="" type="audio/ogg; codecs=opus"></audio>
 
              <!-- Audio Control Panel UI -->
             <div class="row">
-                <div class="col-xs-6">
-                    <button type="button" id="disable-local-meter-button" class="btn btn-secondary btn-sm">X</button>
-                    <button type="button" id="enable-local-meter-button" class="btn btn-secondary btn-sm">^^^</button>
-                    <canvas id="local-stream-meter" height="auto" width="auto"></canvas>     
+                <div class="col">
+
+                    <!-- Local Stream Meter -->
+                    <div class="row audio-controls-row">
+                        <p class="d-block w-100">Local Signal</p>
+                        <span id="disable-local-meter-button"><i class="fas fa-times audio-controls-icon"></i></span>
+                        <span id="enable-local-meter-button"><i class="fas fa-signal audio-controls-icon"></i></span>
+                    </div>
+
+                    <canvas id="local-stream-meter" height="100px" width="auto"></canvas>     
                 </div>
                 
-                <div class="col-xs-6">
-                    <button type="button" id="disable-remote-meter-button" class="btn btn-secondary btn-sm">X</button>
-                    <button type="button" id="enable-remote-meter-button" class="btn btn-secondary btn-sm">^^^</button>
-                    <canvas id="remote-stream-meter" height="auto" width="auto"></canvas>
+                <div class="col">
+
+                    <!-- Remote Stream Meter -->
+                    <div class="row audio-controls-row">
+                        <p class="d-block w-100">Remote Signal</p>
+                        <span id="disable-remote-meter-button"><i class="fas fa-times audio-controls-icon"></i></span>
+                        <span id="enable-remote-meter-button"><i class="fas fa-signal audio-controls-icon"></i></span>
+                    </div>
+
+                    <canvas id="remote-stream-meter" height="100px" width="auto"></canvas>
                 </div>
             </div> <!-- ./row -->
             <hr>

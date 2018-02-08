@@ -128,7 +128,7 @@ window.onload = function() {
     let enable_remote_meter_button = byId('enable-remote-meter-button');
 
     // Reserves a frameId for each the local and remote meter animation frames
-    let local_meter_animation, remote_meter_animaton;
+    let local_meter_animation, remote_meter_animation;
     
     // Start / Stop Recording buttons
     let start_record = byId('start-record');
