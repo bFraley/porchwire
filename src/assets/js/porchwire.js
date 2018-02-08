@@ -88,6 +88,15 @@ let ACTIVE_RECORDING_TRACK;
 let ACTIVE_LOCAL_STREAM;
 let ACTIVE_REMOTE_STREAM;
 
+// Arrays for local and remote AudioContexts.
+// New contexts get pushed to stack, and AudioContext.close()
+// is called to prevent user browser from hitting the limit on
+// open audio contexts. When closing, we pop the context from the stack.
+
+let LOCAL_AUDIO_CONTEXTS = [];
+let REMOTE_AUDIO_CONTEXTS = [];
+
+
 window.onload = function() {
 
     // Set deployment host and port
@@ -195,9 +204,20 @@ window.onload = function() {
             return byId('remote-stream-meter');
         },
 
-        // Init a WebAudio audio context
-        newAudioContext: function() {
-            return new (window.AudioContext || webkitAudioContext)();
+        // Init a WebAudio audio context - accepts 'local' or 'remote'
+        // in order to push new context to LOCAL_AUDIO_CONTEXTS or REMOTE_AUDIO_CONTEXTS
+        newAudioContext: function(local_or_remote_context) {
+
+            let context = new (window.AudioContext || webkitAudioContext)();
+            
+            if (local_or_remote_context === 'local') {
+                LOCAL_AUDIO_CONTEXTS.push(context);
+            }
+            else if (local_or_remote_context === 'remote') {
+                REMOTE_AUDIO_CONTEXTS.push(context);
+            }
+
+            return context;
         },
 
         // Init a 2d canvas context, accepts the html canvs 
@@ -208,6 +228,7 @@ window.onload = function() {
 
         // When user clicks to disable a stream meter, the animation frame's
         // request ID is passed in and canceled via window.cancelAnimationFrame
+        // TODO: NOT USING THIS YET!
         disableStreamMeter: function(requestFrameId) {
             cancelAnimationFrame(requestFrameId);
         },
@@ -300,8 +321,11 @@ window.onload = function() {
     let remote_meter = PWAudio.remote_stream_meter();
 
     // Wrapper around methods in PWAudio to launch the audio stream wave meters
+    // frameId is either 'local' or 'remote' String
     function launchStreamMeters(stream_input, meterCanvas, frameId) {
-        let audio_context = PWAudio.newAudioContext();
+
+        // This context is pushed to LOCAL/REMOTE_AUDIO_CONTEXTS
+        let audio_context = PWAudio.newAudioContext(frameId); // <== 'local' or 'remote'
         let canvas_context = PWAudio.newCanvasContext(meterCanvas);
 
         PWAudio.initStreamMeters(stream_input, audio_context, meterCanvas, canvas_context, frameId);
@@ -513,11 +537,29 @@ window.onload = function() {
 
     // Enable and disable audio stream meter button listeners
     disable_local_meter_button.addEventListener('click', function() {
+
         cancelAnimationFrame(local_meter_animation);
+
+        let length = LOCAL_AUDIO_CONTEXTS.length;
+
+        if (length) {
+            LOCAL_AUDIO_CONTEXTS[length - 1].close();
+            LOCAL_AUDIO_CONTEXTS.pop();
+        }
+
     }, false);
 
     disable_remote_meter_button.addEventListener('click', function() {
+
         cancelAnimationFrame(remote_meter_animation);
+
+        let length = REMOTE_AUDIO_CONTEXTS.length;
+
+        if (length) {
+            REMOTE_AUDIO_CONTEXTS[length - 1].close();
+            REMOTE_AUDIO_CONTEXTS.pop();
+        }
+
     }, false);
 
     enable_local_meter_button.addEventListener('click', function() {
