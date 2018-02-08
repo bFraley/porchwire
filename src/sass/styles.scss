@@ -32,6 +32,32 @@ html {
   }
 }
 
+body {
+  background-color: #121b2b;
+  color: #6C747C;
+  font-weight: 400;
+}
+
+.btn-info {
+  background-color: #6C747C;
+}
+.btn-info:hover {
+  background-color: #030A12;
+  color: #6C747C;
+  border-color: #6C747C;
+}
+
+.card-header {
+  background-color: #030A12;
+  color: #6C747C;
+}
+
+.card {
+  background-color: #eee;
+  color: #eee;
+  margin-bottom: 15px;
+}
+
 #porchwire {
   margin: 1.5rem;
 }
@@ -44,6 +70,7 @@ html {
 #send-button {
   width: 75%;
   margin: auto;
+  margin-bottom: 15px;
 }
 
 #whos-online, #conversation {
@@ -51,15 +78,12 @@ html {
   overflow-y: scroll;
   padding: 0;
   font-size: 0.85rem;
+  color: #343a40;
 }
 
 #conversation li {
   border-top: solid 1px #ddd;
   border-bottom: solid 1px #ddd;
-}
-
-.card, #send-button {
-  margin-bottom: 15px;
 }
 
 #audio {
@@ -75,11 +99,18 @@ html {
   margin: 0px 10px;  
 }
 
+#audio-control-panel {
+  border: solid 2px;
+  border-radius: 10px;
+}
+
 .audio-controls-row {
   padding: 15px;
+  border-left: solid 1px #030A12;
 }
+
 .audio-controls-icon {
-  margin: 5px;
+  margin: 0px 5px;
   opacity: 0.8;
 }
 
