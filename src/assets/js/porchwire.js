@@ -155,7 +155,7 @@ window.onload = function() {
             let blobfile;
             let chunks = [];
             let track = new MediaRecorder(stream_input);
-            track.mimType = 'audio/ogg; codecs=opus';
+            track.mimeType = 'audio/ogg; codecs=opus';
             console.log(track);
 
             track.start();
@@ -241,7 +241,7 @@ window.onload = function() {
             // Analyzer node param is analyser from createAnalyzer above,
             // dataArray from above is Uint8Array audio of audio samples
 
-            function drawStreamMeter(stream) {
+            async function drawStreamMeter(stream) {
 
                 if (frameId === 'local') {
                     local_meter_animation = requestAnimationFrame(drawStreamMeter);

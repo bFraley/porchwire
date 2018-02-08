@@ -40,6 +40,7 @@ body {
 
 .btn-info {
   background-color: #6C747C;
+  border-color: #6C747C;
 }
 .btn-info:hover {
   background-color: #030A12;
@@ -48,8 +49,8 @@ body {
 }
 
 .card-header {
-  background-color: #030A12;
-  color: #6C747C;
+  background-color: #6C747C;
+  color: #eee;
 }
 
 .card {
@@ -60,6 +61,7 @@ body {
 
 #porchwire {
   margin: 1.5rem;
+  color: #fff;
 }
 
 #chat-input {
