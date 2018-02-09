@@ -129,6 +129,34 @@ html {
     }
 }
 
+@include media-breakpoint-up(xs) {
+    html {
+        font-size: 1rem;
+
+        #porchwire {
+            margin: 1.5rem auto;
+        }
+
+        #edit-peerId, 
+        #connect-to-wrapper,
+        #connected-as-peerId {
+            text-align: center;
+
+            label {
+                text-align: left;
+            }
+        }
+
+        #user-info-column {
+            margin-top: 25px;
+        }
+
+        .main-pw-row {
+            margin: 12px;
+        }
+    }
+}
+
 @include media-breakpoint-up(sm) {
     html {
         font-size: 1rem;
