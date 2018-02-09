@@ -254,8 +254,27 @@ window.onload = function() {
             //analyser.connect(audioContext.destination);
 
             let WIDTH, HEIGHT, sliceWidth, x, y, v, i;
-            let fill = 'rgb(238, 238, 238)';
+            let fill = '#008fcc';
             let stroke = 'rgb(136, 255, 0)';
+
+            WIDTH = meterCanvas.width
+            HEIGHT = meterCanvas.height;
+
+            window.addEventListener('resize', function() {
+                WIDTH = meterCanvas.width;
+                HEIGHT = meterCanvas.height;
+                console.log('Meter Canvasses Resized: W H: ' + WIDTH + ' ' + HEIGHT);
+            }, true);
+
+            // Pre-render canvas background for performance
+            let background_canvas = document.createElement('canvas');
+            background_canvas.width = WIDTH;
+            background_canvas.height = HEIGHT;
+
+            let background_context = background_canvas.getContext('2d');
+
+            background_context.fillStyle = fill;
+            background_context.fillRect(0, 0, WIDTH, HEIGHT);
 
             // Call drawStreamMeter defined below
             drawStreamMeter(stream);
@@ -275,12 +294,17 @@ window.onload = function() {
 
                 WIDTH = meterCanvas.width
                 HEIGHT = meterCanvas.height;
-                sliceWidth = WIDTH * 1.0 / bufferLength;
+
+                // Reduces arithmetic in line drawing loop below
+                let heightBy2 = HEIGHT / 2;
+                let widthFloat = WIDTH * 1.0;
+
+                sliceWidth = widthFloat / bufferLength;
 
                 analyser.getByteTimeDomainData(dataArray);
 
-                canvasContext.fillStyle = fill;
-                canvasContext.fillRect(0, 0, WIDTH, HEIGHT);
+                // Draw pre-rendered background
+                canvasContext.drawImage(background_canvas, 0, 0);
 
                 canvasContext.lineWidth = 2;
                 canvasContext.strokeStyle = stroke;
@@ -292,7 +316,7 @@ window.onload = function() {
                 for(i; i < bufferLength; i++) {
              
                     v = dataArray[i] / 128.0;
-                    y = v * HEIGHT/2;
+                    y = v * heightBy2;
 
                     if (!i) {
                         canvasContext.moveTo(x, y);
@@ -306,7 +330,7 @@ window.onload = function() {
 
                 i = 0;
 
-                canvasContext.lineTo(WIDTH, HEIGHT/2);
+                canvasContext.lineTo(WIDTH, heightBy2);
                 canvasContext.stroke();
 
             }

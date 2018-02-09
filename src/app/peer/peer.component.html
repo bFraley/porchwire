@@ -36,11 +36,17 @@
 
         <div class="d-none" id="audio-wrapper">
 
-            <p class="d-block">Audio Stream</p>
-            <audio controls class="d-block" id="audio" src="" type="audio/ogg; codecs=opus"></audio>
-
              <!-- Audio Control Panel UI -->
             <div class="row" id="audio-control-panel">
+
+                <div class="col-12">
+                    <p class="d-block">Audio Stream</p>
+                    <audio controls class="d-block" id="audio" src="" type="audio/ogg; codecs=opus"></audio>
+                    <hr>
+                </div>
+
+                <div class="w-100"></div> <!-- bs4 explicit column break -->
+
                 <div class="col-6">
 
                     <!-- Local Stream Meter -->

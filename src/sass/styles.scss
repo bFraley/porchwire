@@ -38,7 +38,7 @@ html {
 
     .card-header {
         background-color: #121b2b;
-        color: #eee;
+        color: #6C747C;
     }
 
     .card {
@@ -101,6 +101,7 @@ html {
         border: solid 2px;
         border-radius: 10px;
         box-shadow: 0px 3px 3px #000;
+        padding-top: 10px;
     }
 
     .audio-controls-row {
@@ -117,9 +118,11 @@ html {
         opacity: 1;
     }
 
+    /* these are canvas elements */
     .stream-meter {
         width: 100%;
         height: auto;
+        border-radius: 5px;
     }
 }
 
