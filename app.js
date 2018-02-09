@@ -17,16 +17,18 @@ app.set('port', port);
 
 let USERS_ONLINE = [];
 
-// Redirect http => https on production
 
-app.all('*', function(req, res, next) {
-    if (req.headers['x-forwarded-proto'] != 'https') {
-        res.redirect('https://' + req.headers.host + req.url);
-    }
-    else {
-        next();
-    }
-});
+if (port !== 4200) {
+    // Redirect http => https on production
+    app.all('*', function(req, res, next) {
+        if (req.headers['x-forwarded-proto'] != 'https') {
+            res.redirect('https://' + req.headers.host + req.url);
+        }
+        else {
+            next();
+        }
+    });
+}
 
 // Home route - page routing handled by Angular
 app.get('/', (req, res, next) => { 

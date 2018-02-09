@@ -106,7 +106,10 @@ html {
 
     .audio-controls-row {
         padding: 15px;
-        border-left: solid 1px #030A12;
+    }
+
+    .audio-controls-row:nth-of-type(even) {
+        border-left: solid 1px #6C747C;
     }
 
     .audio-controls-icon {

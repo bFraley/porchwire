@@ -153,7 +153,7 @@ window.onload = function() {
 
         // Converts stream to objectURL to play in audio element
         streamAudio: async function(stream_input) {
-            audio.src = (URL || webkitURL || mozURL).createObjectURL(stream_input);
+            audio.srcObject = stream_input;
         },
 
 
@@ -408,13 +408,8 @@ window.onload = function() {
     // called above in newConnecton.
     function newJam() {
 
-        // TODO: navigator.getUserMedia is deprecated and navigator.mediaDevices.getUserMeda
-        // should be used instead. Need adapter.js and possible other browser compatibility fixes
-        // to be added. Reference: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-
-        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
-        navigator.getUserMedia({video: false, audio: true}, function(stream) {
+        navigator.mediaDevices.getUserMedia({video: false, audio: true})
+       .then(function(stream) {
         
         // CALL
             var ID = byId('connect-to').value;
@@ -428,23 +423,23 @@ window.onload = function() {
                 AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
                 PWAudio.streamAudio(remoteStream);
 
-                
                 launchStreamMeters(stream, local_meter, 'local');
                 launchStreamMeters(remoteStream, remote_meter, 'remote');
 
                 audio_wrapper.className = "d-block";
-
             });
 
-        }, function(err) {
-            console.log('Failed to get local stream' ,err);
+        })
+       .catch(function(err) {
+            console.log('Failed to get local stream', err);
         });
 
         // ANSWER
         peer.on('call', function(call) {
 
             // Get user media stream and answer the call with stream
-            navigator.getUserMedia({video: false, audio: true}, function(stream) {
+            navigator.mediaDevices.getUserMedia({video: false, audio: true})
+            .then(function(stream) {
                 call.answer(stream); // Answer the call
 
                 call.on('stream', function(remoteStream) {
@@ -463,8 +458,9 @@ window.onload = function() {
 
                 });
 
-            }, function(err) {
-                console.log('Failed to get local stream' ,err);
+            })
+            .catch(function(err) {
+                console.log('Failed to get local stream', err);
             });
         });
     }
