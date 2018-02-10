@@ -44,7 +44,18 @@ window.onload = function() {
     if (tryLocalData()) {
         let id = getLocalItem('id');
         userId.value = id;
-        console.log('Got user ID: ' + userId.value);
+    }
+
+    // These will move to PW.Net values
+    let connected;
+    let reconnect_try_count = 0;
+    let HOST = 'localhost';
+    let PORT = 4200;
+
+    // Set deployment host and port
+    if (window.location.href.indexOf('porchwire') > 0) {
+        HOST = 'porchwire.herokuapp.com';
+        PORT = '';
     }
 
     // Append a child list element and it's innerText (content) to a (parent) <ul> element
@@ -59,7 +70,6 @@ window.onload = function() {
     async function porchPing() {
         if (window.peerUser && !window.peerUser.socket.disconnected) {
             window.peerUser.socket.send({type: 'ping'});
-            console.log('ping');
         }
         setTimeout(porchPing, 45000);
     }
@@ -91,10 +101,7 @@ window.onload = function() {
         setTimeout(getAllOnline, 15000);
     }
 
-    let connected;
-    let reconnect_try_count = 0;
-    let HOST = 'localhost';
-    let PORT = 4200;
+    
 
     /* Global Audio Values */
     let AUDIO_STREAM;
@@ -106,16 +113,10 @@ window.onload = function() {
     // New contexts get pushed to stack, and AudioContext.close()
     // is called to prevent user browser from hitting the limit on
     // open audio contexts. When closing, we pop the context from the stack.
-
     let LOCAL_AUDIO_CONTEXTS = [];
     let REMOTE_AUDIO_CONTEXTS = [];
 
-    // Set deployment host and port
-    if (window.location.href.indexOf('porchwire') > 0) {
-        HOST = 'porchwire.herokuapp.com';
-        PORT = '';
-    }
-
+    // DOM UI elements
     let ngPeer = byId('ngPeer');
     let chat_input = byId('chat-input');
     let send_button = byId('send-button');
@@ -149,14 +150,13 @@ window.onload = function() {
     // Wrapper where new recording elements get appended
     let recording_session_files = byId('recording-session-files');
 
-    // Audio Controls UI
+    // PWAudio - Audio Controls Methods and UI helpers
     let PWAudio = {
 
         // Converts stream to objectURL to play in audio element
         streamAudio: async function(stream_input) {
             audio.srcObject = stream_input;
         },
-
 
         // Initial implementation of recording local and remote audio streams,
         // outputs window.URL.createObjectURL(blobfile) to recording_session_files
