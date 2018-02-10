@@ -1,105 +1,42 @@
 /* Porchwire Project Copright 2018 */
 
-
-// DOM Helpers
-function byId(name) { return document.getElementById(name); }
-function getUserId() { return byId('user').value; }
-
-// Append a child list element and it's innerText (content) to a (parent) <ul> element
-function appendListItem(parent, content) {
-    let item = document.createElement('li');
-    item.className = 'list-group-item';
-    parent.appendChild(item);
-    item.innerText = content;
-}
-
-// PING for socket keepalive
-async function porchPing() {
-    if (window.peerUser && !window.peerUser.socket.disconnected) {
-        window.peerUser.socket.send({type: 'ping'});
-        console.log('ping');
-    }
-    setTimeout(porchPing, 45000);
-}
-
-// 15sec async recursive to get all online users and update UI
-async function getAllOnline() {
-
-    let route = 'online';
-    let whos_online = byId('whos-online');
-
-    fetch(route, { method: 'get'})
-    .then(function(response) { return response.json(); })
-    .then(function(users) {
-
-        whos_online.innerHTML = '';
-
-        if (users === undefined || users.length < 1) {
-            appendListItem(whos_online, '0 Users Online');
-        }
-        else {
-
-            for (let i = 0; i < users.length; i++ ) {
-                appendListItem(whos_online, users[i].name);
-            }
-        }
-        
-    });
-
-    setTimeout(getAllOnline, 15000);
-}
-
-// Local Storage Helpers
-
-let porchwireLocalStorage = {
-    test: true,
-    id: null
-}
-
-let pwApp = 'porchwireApp';
-
-// Set local storage porchwireApp.keyname = val
-function setLocalItem(keyname, val) {
-    porchwireLocalStorage[keyname] = val;
-    return localStorage.setItem(pwApp, JSON.stringify(porchwireLocalStorage));
-}
-
-// Get local storage porchwireApp.keyname
-function getLocalItem(keyname) {
-    let localData = JSON.parse(localStorage.getItem(pwApp));
-    return localData[keyname];
-}
-
-function tryLocalData() {
-    if (localStorage.getItem(pwApp))
-        return true;
-    else
-        return false;
-} 
-
-let connected;
-let reconnect_try_count = 0;
-let HOST = 'localhost';
-let PORT = 4200;
-
-/* Global Audio Values */
-let AUDIO_STREAM;
-let ACTIVE_RECORDING_TRACK;
-let ACTIVE_LOCAL_STREAM;
-let ACTIVE_REMOTE_STREAM;
-
-// Arrays for local and remote AudioContexts.
-// New contexts get pushed to stack, and AudioContext.close()
-// is called to prevent user browser from hitting the limit on
-// open audio contexts. When closing, we pop the context from the stack.
-
-let LOCAL_AUDIO_CONTEXTS = [];
-let REMOTE_AUDIO_CONTEXTS = [];
-
-
 window.onload = function() {
 
+        // DOM Helpers
+    function byId(name) { return document.getElementById(name); }
+    function byClass(name) { return document.getElementsByClassName(name); }
+    
+    // Initial user name field's value is wither generated in PeerComponent,
+    // or is retrieved from browser local storage
     let userId = byId('user');
+    function getUserId() { return userId.value; }
+
+    // Local Storage Helpers
+    let porchwireLocalStorage = {
+        test: true,
+        id: null
+    }
+
+    let pwApp = 'porchwireApp';
+
+    // Set local storage porchwireApp.keyname = val
+    function setLocalItem(keyname, val) {
+        porchwireLocalStorage[keyname] = val;
+        return localStorage.setItem(pwApp, JSON.stringify(porchwireLocalStorage));
+    }
+
+    // Get local storage porchwireApp.keyname
+    function getLocalItem(keyname) {
+        let localData = JSON.parse(localStorage.getItem(pwApp));
+        return localData[keyname];
+    }
+
+    function tryLocalData() {
+        if (localStorage.getItem(pwApp))
+            return true;
+        else
+            return false;
+    } 
 
     // If 'porchwireApp' is in localStorage, if id is set,
     // reuse this name initially in edit_peerId element.
@@ -107,7 +44,71 @@ window.onload = function() {
     if (tryLocalData()) {
         let id = getLocalItem('id');
         userId.value = id;
+        console.log('Got user ID: ' + userId.value);
     }
+
+    // Append a child list element and it's innerText (content) to a (parent) <ul> element
+    function appendListItem(parent, content) {
+        let item = document.createElement('li');
+        item.className = 'list-group-item';
+        parent.appendChild(item);
+        item.innerText = content;
+    }
+
+    // PING for socket keepalive
+    async function porchPing() {
+        if (window.peerUser && !window.peerUser.socket.disconnected) {
+            window.peerUser.socket.send({type: 'ping'});
+            console.log('ping');
+        }
+        setTimeout(porchPing, 45000);
+    }
+
+    // 15sec async recursive to get all online users and update UI
+    async function getAllOnline() {
+
+        let route = 'online';
+        let whos_online = byId('whos-online');
+
+        fetch(route, { method: 'get'})
+        .then(function(response) { return response.json(); })
+        .then(function(users) {
+
+            whos_online.innerHTML = '';
+
+            if (users === undefined || users.length < 1) {
+                appendListItem(whos_online, '0 Users Online');
+            }
+            else {
+
+                for (let i = 0; i < users.length; i++ ) {
+                    appendListItem(whos_online, users[i].name);
+                }
+            }
+            
+        });
+
+        setTimeout(getAllOnline, 15000);
+    }
+
+    let connected;
+    let reconnect_try_count = 0;
+    let HOST = 'localhost';
+    let PORT = 4200;
+
+    /* Global Audio Values */
+    let AUDIO_STREAM;
+    let ACTIVE_RECORDING_TRACK;
+    let ACTIVE_LOCAL_STREAM;
+    let ACTIVE_REMOTE_STREAM;
+
+    // Arrays for local and remote AudioContexts.
+    // New contexts get pushed to stack, and AudioContext.close()
+    // is called to prevent user browser from hitting the limit on
+    // open audio contexts. When closing, we pop the context from the stack.
+
+    let LOCAL_AUDIO_CONTEXTS = [];
+    let REMOTE_AUDIO_CONTEXTS = [];
 
     // Set deployment host and port
     if (window.location.href.indexOf('porchwire') > 0) {
@@ -259,12 +260,6 @@ window.onload = function() {
 
             WIDTH = meterCanvas.width
             HEIGHT = meterCanvas.height;
-
-            window.addEventListener('resize', function() {
-                WIDTH = meterCanvas.width;
-                HEIGHT = meterCanvas.height;
-                console.log('Meter Canvasses Resized: W H: ' + WIDTH + ' ' + HEIGHT);
-            }, true);
 
             // Pre-render canvas background for performance
             let background_canvas = document.createElement('canvas');
@@ -465,6 +460,9 @@ window.onload = function() {
         });
     }
 
+
+    // initPeer gets called when user enters their name and clicks 'connect' button
+    // and instantiates a new peerjs Peer object
     function initPeer() {  
 
         /* Page Load - Assign Peer ID */
@@ -589,6 +587,12 @@ window.onload = function() {
     enable_remote_meter_button.addEventListener('click', function() {
         launchStreamMeters(ACTIVE_REMOTE_STREAM, remote_meter, 'remote'); 
     }, false);
+
+    // Canvas resize event listener to reset canvas WIDTH and HEIGHT values
+    window.addEventListener('resize', function() {
+        WIDTH = meterCanvas.width;
+        HEIGHT = meterCanvas.height;
+    }, true);
 
     //Audio Stream record and stop button UI switch
     // Accepts boolean (recordState), 1 for record, 0 for stop.
