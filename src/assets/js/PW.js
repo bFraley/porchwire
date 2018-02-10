@@ -2,10 +2,9 @@
 
 PW.js is a library of objects and functions under the 'PW'
 namespace for supporting feature development during prototyping
-phases. Most, or all of the methods deined here will probably end
+phases. Most, or all of the methods defined here will probably end
 up in the form of es6 classes or defined in Typescript as Angular
-modules and components.
-
+modules, components, and services.
 */
 
 let PW = {

@@ -15,6 +15,9 @@ app.use(bodyParser.json());
 
 app.set('port', port);
 
+console.log(port);
+console.log(typeof(port));
+
 let USERS_ONLINE = [];
 
 

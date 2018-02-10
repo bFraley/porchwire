@@ -99,6 +99,16 @@ let REMOTE_AUDIO_CONTEXTS = [];
 
 window.onload = function() {
 
+    let userId = byId('user');
+
+    // If 'porchwireApp' is in localStorage, if id is set,
+    // reuse this name initially in edit_peerId element.
+    // Execute this here right away after we have userId!
+    if (tryLocalData()) {
+        let id = getLocalItem('id');
+        userId.value = id;
+    }
+
     // Set deployment host and port
     if (window.location.href.indexOf('porchwire') > 0) {
         HOST = 'porchwire.herokuapp.com';
@@ -111,16 +121,6 @@ window.onload = function() {
     let conversation = byId('conversation');
     let connect_jam = byId('connect-jam');
     let audio = byId('audio');
-
-    let userId = byId('user');
-
-    // If 'porchwireApp' is in localStorage, if id is set,
-    // reuse this name initially in edit_peerId element.
-    // Execute this here right away after we have userId!
-    if (tryLocalData()) {
-        let id = getLocalItem('id');
-        userId.value = id;
-    }
 
     let edit_peerId = byId('edit-peerId');
     let connected_as_peerId = byId('connected-as-peerId');
