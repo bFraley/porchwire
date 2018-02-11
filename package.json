@@ -42,6 +42,7 @@
     "postcss-merge-rules": "~2.1.2",
     "rxjs": "^5.5.6",
     "schematics": "^0.2.0",
+    "sweetalert": "^2.1.0",
     "typescript": "~2.5.3",
     "webrtc-adapter": "^6.1.0",
     "zone.js": "^0.8.19"

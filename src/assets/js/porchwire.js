@@ -48,6 +48,7 @@ window.onload = function() {
 
     // These will move to PW.Net values
     let connected;
+    let remote_initiated_connection;
     let reconnect_try_count = 0;
     let HOST = 'localhost';
     let PORT = 4200;
@@ -155,7 +156,7 @@ window.onload = function() {
 
         // Converts stream to objectURL to play in audio element
         streamAudio: async function(stream_input) {
-            audio.srcObject = stream_input;
+            audio.srcObject = stream_input; // TODO: rename 'audio' element id
         },
 
         // Initial implementation of recording local and remote audio streams,
@@ -372,24 +373,19 @@ window.onload = function() {
     }
 
     // User clicked Connect to initiate a call. Creates a peer to peer
-    // data connection, and the call newJam to initiate media audio streams.
+    // data connection, and the call newJam to initiate media audio streams
     function newConnection() {
 
         var ID = byId('connect-to').value;
-
         var conn = peer.connect(ID, { reliable: true });
 
         // Data channel connection
         conn.on('open', function() {
 
-            // Receive messages
+            // Receive message
             conn.on('data', function(data) {
                 addChatMsg(data);
             });
-
-            // Send messages
-            let init_msg = 'Connection established with ' + peer.id;
-            conn.send(init_msg);
 
         });
 
@@ -399,16 +395,16 @@ window.onload = function() {
 
     }
 
-    // Setup and define media stream on peer.all and peer.answer,
-    // called above in newConnecton.
+    // Media call is placed to remot peer after data connection
+    // is established above in newConnection, this is called
     function newJam() {
 
         navigator.mediaDevices.getUserMedia({video: false, audio: true})
        .then(function(stream) {
         
         // CALL
-            var ID = byId('connect-to').value;
-            var call = peer.call(ID, stream);
+            let ID = byId('connect-to').value;
+            let call = peer.call(ID, stream);
 
             call.on('stream', function(remoteStream) {
 
@@ -418,8 +414,8 @@ window.onload = function() {
                 AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
                 PWAudio.streamAudio(remoteStream);
 
-                launchStreamMeters(stream, local_meter, 'local');
-                launchStreamMeters(remoteStream, remote_meter, 'remote');
+                //launchStreamMeters(stream, local_meter, 'local');
+                //launchStreamMeters(remoteStream, remote_meter, 'remote');
 
                 audio_wrapper.className = "d-block";
             });
@@ -429,35 +425,6 @@ window.onload = function() {
             console.log('Failed to get local stream', err);
         });
 
-        // ANSWER
-        peer.on('call', function(call) {
-
-            // Get user media stream and answer the call with stream
-            navigator.mediaDevices.getUserMedia({video: false, audio: true})
-            .then(function(stream) {
-                call.answer(stream); // Answer the call
-
-                call.on('stream', function(remoteStream) {
-
-                    ACTIVE_LOCAL_STREAM = stream;
-                    ACTIVE_REMOTE_STREAM = remoteStream;
-
-                    AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
-                    PWAudio.streamAudio(remoteStream);
-
-                    
-                    launchStreamMeters(stream, local_meter, 'local');
-                    launchStreamMeters(remoteStream, remote_meter, 'remote');
-
-                    audio_wrapper.className = "d-block";
-
-                });
-
-            })
-            .catch(function(err) {
-                console.log('Failed to get local stream', err);
-            });
-        });
     }
 
 
@@ -490,11 +457,16 @@ window.onload = function() {
             porchPing();
         });
 
+        // Emitted when a new data connection is established from a remote peer
         peer.on('connection', function(conn) {
+
+            remote_initiated_connection = conn;
 
             conn.on('data', function(data){
                 addChatMsg(data);
             });
+
+
 
         });
 
@@ -511,6 +483,54 @@ window.onload = function() {
                     reconnect_try_count++;
                 }
             }
+        });
+
+        // Received a jam invite (a media call)
+        peer.on('call', function(call) {
+
+            let invite = remote_initiated_connection.peer + ' invited you to jam';
+
+            swal({
+                title: "Jam Time?",
+                text: invite,
+                buttons: true
+            })
+            .then(function(accepted) {
+                
+                if (accepted) {
+
+                    // Get user media stream and answer the call with stream
+                    navigator.mediaDevices.getUserMedia({video: false, audio: true})
+                    .then(function(stream) {
+                        call.answer(stream); // Answer the call
+
+                        call.on('stream', function(remoteStream) {
+
+                            ACTIVE_LOCAL_STREAM = stream;
+                            ACTIVE_REMOTE_STREAM = remoteStream;
+
+                            AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
+                            PWAudio.streamAudio(remoteStream);
+
+                            
+                            //launchStreamMeters(stream, local_meter, 'local');
+                            //launchStreamMeters(remoteStream, remote_meter, 'remote');
+
+                            audio_wrapper.className = "d-block";
+
+                        });
+
+                    })
+                    .catch(function(err) {
+                        console.log('Failed to get local stream', err);
+                    });
+                    
+                }
+                else {
+                    remote_initiated_connection.send(peer.id + " isn't available to jam right now.");
+                    remote_initiated_connection.close();
+                }
+            });
         });
 
         return peer;
@@ -590,8 +610,8 @@ window.onload = function() {
 
     // Canvas resize event listener to reset canvas WIDTH and HEIGHT values
     window.addEventListener('resize', function() {
-        WIDTH = meterCanvas.width;
-        HEIGHT = meterCanvas.height;
+        WIDTH = local_meter.width;
+        HEIGHT = local_meter.height;
     }, true);
 
     //Audio Stream record and stop button UI switch
