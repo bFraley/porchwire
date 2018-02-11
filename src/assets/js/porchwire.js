@@ -2,7 +2,7 @@
 
 window.onload = function() {
 
-        // DOM Helpers
+    // DOM Helpers
     function byId(name) { return document.getElementById(name); }
     function byClass(name) { return document.getElementsByClassName(name); }
     
@@ -82,7 +82,9 @@ window.onload = function() {
         let whos_online = byId('whos-online');
 
         fetch(route, { method: 'get'})
-        .then(function(response) { return response.json(); })
+        .then(function(response) { 
+            return response.json();
+        })
         .then(function(users) {
 
             whos_online.innerHTML = '';
@@ -103,7 +105,6 @@ window.onload = function() {
     }
 
     
-
     /* Global Audio Values */
     let AUDIO_STREAM;
     let ACTIVE_RECORDING_TRACK;
@@ -332,8 +333,6 @@ window.onload = function() {
             }
         },
 
-        
-
     }; // end PWAudio
 
     // Local and Remote Audio Wave Meters
@@ -387,6 +386,10 @@ window.onload = function() {
                 addChatMsg(data);
             });
 
+            conn.on('close', function() {
+                swal(ID + " isn't available to jam right now");
+            });
+
         });
 
         newJam();
@@ -414,8 +417,8 @@ window.onload = function() {
                 AUDIO_STREAM = remoteStream; // TODO: bug, or really don't need this
                 PWAudio.streamAudio(remoteStream);
 
-                //launchStreamMeters(stream, local_meter, 'local');
-                //launchStreamMeters(remoteStream, remote_meter, 'remote');
+                launchStreamMeters(stream, local_meter, 'local');
+                launchStreamMeters(remoteStream, remote_meter, 'remote');
 
                 audio_wrapper.className = "d-block";
             });
@@ -460,13 +463,11 @@ window.onload = function() {
         // Emitted when a new data connection is established from a remote peer
         peer.on('connection', function(conn) {
 
-            remote_initiated_connection = conn;
+            connected = remote_initiated_connection = conn;
 
             conn.on('data', function(data){
                 addChatMsg(data);
             });
-
-
 
         });
 
@@ -513,8 +514,8 @@ window.onload = function() {
                             PWAudio.streamAudio(remoteStream);
 
                             
-                            //launchStreamMeters(stream, local_meter, 'local');
-                            //launchStreamMeters(remoteStream, remote_meter, 'remote');
+                            launchStreamMeters(stream, local_meter, 'local');
+                            launchStreamMeters(remoteStream, remote_meter, 'remote');
 
                             audio_wrapper.className = "d-block";
 
@@ -550,7 +551,7 @@ window.onload = function() {
         let sent_message = chat_input.value;
         let you_sent = 'You: ' + sent_message;
 
-        connected.send(sent_message);
+        connected.send(peer.id + ': ' + sent_message);
         addChatMsg(you_sent);
 
         chat_input.value = '';
